@@ -212,10 +212,11 @@ class GUI:
 
         strt_stop.pack()
 
+        # Speed Scaler
         scale_frame = tb.Frame(self.config_msg)
 
         self.n_speed = StringVar()
-        self.scale = tb.Scale(scale_frame, from_=5, to=0.5, length=200, value=0.5, command=self.scaler)
+        self.scale = tb.Scale(scale_frame, from_=5, to=0.5, length=200, value=1, command=self.scaler)
         self.scale.pack(pady=8)
         lbl_speed = tb.Label(scale_frame, textvariable = self.n_speed)
         lbl_speed.pack(pady=[0,8])
