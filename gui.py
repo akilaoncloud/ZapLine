@@ -36,6 +36,9 @@ class GUI:
             if read:
                 wb.close()
 
+            if not read:
+                wb.save(SHEET_PATH)
+
             return True
 
         except PermissionError:
@@ -125,8 +128,8 @@ class GUI:
 
         # Creates an window
         window = tb.Window(themename=GUI_THEME)
-        window.iconbitmap('zapline.ico')
-        window.iconbitmap(default='zapline.ico')
+        window.iconbitmap(ICON_PATH)
+        window.iconbitmap(default=ICON_PATH)
         window.title(GUI_TITLE)
 
         # Adjusts the layout
@@ -267,10 +270,15 @@ class GUI:
         def send():
             tab_name = str(self.str_tab.get())
 
-            if tab_name == DEFAULT_TAB_OPTION:
-                self.issueHandler(NO_TAB_ERROR)
+            if not self.syncWorkbook(False):
                 return None
             
+            try:
+                tab = wb[tab_name]
+            except KeyError:
+                self.issueHandler(NO_TAB_ERROR)
+                return None
+
             self.status.set(STATUS_SENDING)
 
             self.msg['state']=DISABLED
@@ -287,10 +295,6 @@ class GUI:
             self.stop['state']=NORMAL
             self.send['state']=DISABLED
             
-            self.syncWorkbook(False)
-
-            tab = wb[tab_name]
-
             lin_start = 2 if self.str_lin.get()=='' else int(self.str_lin.get())+1
             mode = int(self.mode.get())
             # 'line_one.character_zero', 'end_of_text - 1 character (\n)'
@@ -348,6 +352,11 @@ class GUI:
                 first_loop = False
 
             self.status.set(result)
+
+            # Tries to reset the sheet to keep errors away
+            wb.save(SHEET_PATH)
+            self.syncWorkbook(True)
+            # The errors only occur when the sheet is not closed before sending the messages
 
             self.msg['state']=NORMAL
             self.bt_sheet['state']=NORMAL
