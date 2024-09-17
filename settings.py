@@ -9,11 +9,11 @@ SEARCH_BAR_CLEAN_BUTTON = 'span[data-icon="x-alt"]'
 CHAT_LIST = '#app div._aigv._aigw._aigx div[role="button"] div._ak8l'
     
     # Looking outside | No results found
-RESULTS_SUBTITLE = '#app div._aigv._aigw._aigx div[aria-live="polite"] span._ao3e'
+RESULTS_SUBTITLE = '#app div._aigv._aigw._aigx span._ao3e'
 OFFLINE_SUBTITLE = '#app div._aigv._aigw._aigx div.x1c436fg'
     
     # Main text inputs
-MAIN_TEXT_INPUT = '#main > footer div._ak1r > div._ak1l'
+MAIN_TEXT_INPUT = '#main > footer div._ak1r > div:first-child'
 MAIN_SEND_BUTTON = '#main div._ak1t span[data-icon="send"]'
     
     # Clip icon - files to attach
@@ -34,10 +34,12 @@ SYNC_TIME = 120
 
     # GUI Style
 GUI_TITLE = 'Zapline - WhatsApp'
+SHEET_WINDOW_TITLE = 'Editar Planilha'
 GUI_THEME = 'solar'
 
     # Path
 SHEET_PATH = 'sheet.xlsx'
+ICON_PATH = 'zapline.ico'
 
 
 # DEFAULT APP TEXT LANGUAGE
@@ -82,8 +84,8 @@ DEFAULT_ERROR = 'Houve um problema no último envio'
 FILE_IMAGE_ERROR = 'O arquivo não é uma imagem'
 SYNC_ERROR = 'Houve um problema na sincronização'
 CONNECTION_ERROR = 'Conexão instável ou inexistente'
-SHEET_ERROR = 'Planilha do Excel aberta'
-NO_TAB_ERROR = 'Escolha uma aba antes de iniciar'
+SHEET_ERROR = 'Feche a Planilha do Excel antes de prosseguir'
+NO_TAB_ERROR = 'Aba inválida. Escolha uma aba existente'
 
     # Buttons
 BUTTON_SYNC = 'Sincronizar'

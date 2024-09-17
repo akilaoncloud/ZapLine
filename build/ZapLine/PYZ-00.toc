@@ -1,5 +1,5 @@
-('C:\\Users\\Prover User\\OneDrive - Prover '
- 'Service\\ZapLine\\build\\ZapLine\\PYZ-00.pyz',
+('C:\\Users\\Prover '
+ 'User\\Documents\\GitHub\\ZapLine\\build\\ZapLine\\PYZ-00.pyz',
  [('PIL',
    'C:\\Users\\Prover '
    'User\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\PIL\\__init__.py',
@@ -749,7 +749,7 @@
    'User\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\dotenv\\variables.py',
    'PYMODULE'),
   ('edge',
-   'C:\\Users\\Prover User\\OneDrive - Prover Service\\ZapLine\\edge.py',
+   'C:\\Users\\Prover User\\Documents\\GitHub\\ZapLine\\edge.py',
    'PYMODULE'),
   ('email',
    'C:\\Users\\Prover '
@@ -2624,7 +2624,7 @@
    'User\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\selenium\\webdriver\\wpewebkit\\webdriver.py',
    'PYMODULE'),
   ('settings',
-   'C:\\Users\\Prover User\\OneDrive - Prover Service\\ZapLine\\settings.py',
+   'C:\\Users\\Prover User\\Documents\\GitHub\\ZapLine\\settings.py',
    'PYMODULE'),
   ('setuptools',
    'C:\\Users\\Prover '
