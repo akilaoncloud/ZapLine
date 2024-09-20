@@ -298,7 +298,8 @@ class GUI:
             lin_start = 2 if self.str_lin.get()=='' else int(self.str_lin.get())+1
             mode = int(self.mode.get())
             # 'line_one.character_zero', 'end_of_text - 1 character (\n)'
-            message = str(self.msg.get('1.0','end-1c')).rstrip('\n') # Remove this characters from the end of the string
+            raw_message = str(self.msg.get('1.0','end-1c'))
+            message = raw_message.replace('\xa0', ' ').rstrip('\n') # Remove this characters from the end of the string
             path = self.path
             last_search = ''
 
