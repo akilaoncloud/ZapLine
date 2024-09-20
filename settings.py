@@ -2,7 +2,7 @@
 
     # New chat and search bar
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
-SEARCH_BAR = '#app div._aigu div._ai05 div[contenteditable="true"]'
+SEARCH_BAR = '#app div._aigv._aigw._aigx div[contenteditable="true"]'
 SEARCH_BAR_CLEAN_BUTTON = 'span[data-icon="x-alt"]'
 
     # Contacts list
