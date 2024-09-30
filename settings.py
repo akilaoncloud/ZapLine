@@ -13,8 +13,8 @@ RESULTS_SUBTITLE = '#app div._aigv._aigw._aigx span._ao3e'
 OFFLINE_SUBTITLE = '#app div._aigv._aigw._aigx div.x1c436fg'
     
     # Main text inputs
-MAIN_TEXT_INPUT = '#main > footer div._ak1r > div:first-child'
-MAIN_SEND_BUTTON = '#main div._ak1t span[data-icon="send"]'
+MAIN_TEXT_INPUT = '#main > footer div._ak1r div[contenteditable="true"]'
+MAIN_SEND_BUTTON = '#main > footer div._ak1r span[data-icon="send"]'
     
     # Clip icon - files to attach
 ATTACH_PLUS_BUTTON = 'span[data-icon="plus"]'
