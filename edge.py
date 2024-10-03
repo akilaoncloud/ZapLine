@@ -85,9 +85,6 @@ class Edge:
 
             count_lin += 1
 
-        # Use it to compare both strings when something goes wrong
-        msg_text_field = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, element))).text
-        wait.until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, element), message))
         text_field.click()
         
         sleep(speed); return text_field
