@@ -163,7 +163,6 @@ class Edge:
                                 self.writeMessage(MAIN_TEXT_INPUT, message, speed)
 
                                 self.attachPhoto(path)
-                                wait.until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, FILE_TEXT_INPUT), message))
                                 
                                 wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, FILE_TEXT_INPUT))).send_keys(Keys.ENTER)
 
