@@ -30,7 +30,7 @@ FILE_SEND_BUTTON = '#app div._aigu div._aigz span[data-icon="send"]'
     # Value used for wait.until
 WAIT_TIME = 10
     # Value used to wait for synchronization
-SYNC_TIME = 120
+SYNC_TIME = 300
 
     # GUI Style
 GUI_TITLE = 'Zapline - WhatsApp'
