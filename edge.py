@@ -164,7 +164,8 @@ class Edge:
 
                                 self.attachPhoto(path)
                                 
-                                wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, FILE_TEXT_INPUT))).send_keys(Keys.ENTER)
+                                wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, FILE_SEND_BUTTON))).click()
+                                #wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, FILE_TEXT_INPUT))).send_keys(Keys.ENTER)
 
                         wait.until( # Check if both the send buttons are gone
                             EC.all_of(
