@@ -2,15 +2,15 @@
 
     # New chat and search bar
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
-SEARCH_BAR = '#app div._aigv._aigw._aigx div[contenteditable="true"]'
+SEARCH_BAR = '#app div._aigw div[contenteditable="true"]'
 SEARCH_BAR_CLEAN_BUTTON = 'span[data-icon="x-alt"]'
 
     # Contacts list
-CHAT_LIST = '#app div._aigv._aigw._aigx div[role="button"] div._ak8l'
+CHAT_LIST = '#app div._aigw div[role="button"] div._ak8l'
     
     # Looking outside | No results found
-RESULTS_SUBTITLE = '#app div._aigv._aigw._aigx span._ao3e'
-OFFLINE_SUBTITLE = '#app div._aigv._aigw._aigx div.x1c436fg'
+RESULTS_SUBTITLE = '#app div._aigw span._ao3e'
+OFFLINE_SUBTITLE = '#app div._aigw div.x1c436fg'
     
     # Main text inputs
 MAIN_TEXT_INPUT = '#main > footer div._ak1r div[contenteditable="true"]'
@@ -21,8 +21,8 @@ ATTACH_PLUS_BUTTON = 'span[data-icon="plus"]'
 IMG_VID_BUTTON = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
     
     # Text input after attaching a file
-FILE_TEXT_INPUT = '#app div._aigu div._aigz div[contenteditable="true"]'
-FILE_SEND_BUTTON = '#app div._aigu div._aigz span[data-icon="send"]'
+# FILE_TEXT_INPUT = '#app div[contenteditable="true"]'
+FILE_SEND_BUTTON = '#app div.x1n2onr6.x5yr21d.x6ikm8r.x10wlt62.x17dzmu4.xyyilfv.x1iyjqo2.xa1v5g2 span[data-icon="send"]'
 
 
 # DEFAULT APP VALUES
