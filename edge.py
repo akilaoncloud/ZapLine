@@ -1,6 +1,7 @@
 from selenium import webdriver  # pip install selenium
 
 from selenium.common.exceptions import *
+from requests.exceptions import ConnectionError
 
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.edge.service import Service
@@ -51,9 +52,19 @@ class Edge:
                 # SYNC_TIME minutes to sync your WhatsApp
                 WebDriverWait(driver, SYNC_TIME).until(EC.element_to_be_clickable((By.CSS_SELECTOR, NEW_CHAT)))
 
-            except Exception as e: # In case of any error
+            except ConnectionError: # Internet error
+            
+                result = CONNECTION_ERROR
+                logging.error(format_exc())
                 
-                result = 'SYNC_ERROR'
+                try: # Tries to quit in case the browser is still open
+                    driver.quit()
+                except: # If it's already closed, it does nothing
+                    pass
+
+            except Exception as e: # In case of any other error
+                
+                result = SYNC_ERROR
                 logging.error(format_exc())
                 
                 try: # Tries to quit in case the browser is still open
@@ -139,7 +150,7 @@ class Edge:
                         break
 
                     elif (contact_search_retries == 20) or ('internet' in search): # Slow |OR| no connection.
-                        return 'CONNECTION_ERROR'
+                        return CONNECTION_ERROR
                         
                     elif '...' in search: # Looking for... 
                         sleep(1) # It's still looking if the contact exists or not
@@ -181,7 +192,7 @@ class Edge:
 
         except Exception:
             # In case of error
-            result = 'DEFAULT_ERROR'
+            result = DEFAULT_ERROR
             logging.error(format_exc())
 
         else:

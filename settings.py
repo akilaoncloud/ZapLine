@@ -6,10 +6,10 @@ SEARCH_BAR = '#app div._aigw div[contenteditable="true"]'
 SEARCH_BAR_CLEAN_BUTTON = 'span[data-icon="x-alt"]'
 
     # Contacts list
-CHAT_LIST = '#app div._aigw div[role="button"] div._ak8l'
+CHAT_LIST = '#app div._aigw div[role="button"] div._ak8n' # It clicks on the photo
     
     # Looking outside | No results found
-RESULTS_SUBTITLE = '#app div._aigw span._ao3e'
+RESULTS_SUBTITLE = '#app div._aigw span:has([class="_ao3e"])' # :not stops selenium from selecting existent chats
 OFFLINE_SUBTITLE = '#app div._aigw div.x1c436fg'
     
     # Main text inputs
@@ -29,8 +29,8 @@ FILE_SEND_BUTTON = '#app div.x1n2onr6.x5yr21d.x6ikm8r.x10wlt62.x17dzmu4.xyyilfv.
     
     # Value used for wait.until
 WAIT_TIME = 10
-    # Value used to wait for synchronization
-SYNC_TIME = 300
+    # Value used to wait for synchronization (10 Minutes)
+SYNC_TIME = 600
 
     # GUI Style
 GUI_TITLE = 'Zapline - WhatsApp'
