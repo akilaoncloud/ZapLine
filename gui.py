@@ -254,9 +254,9 @@ class GUI:
             self.status.set(STATUS_SYNCING)
             sync_result = Edge().syncBrowser()
 
-            if sync_result == 'SYNC_ERROR':
+            if sync_result in (SYNC_ERROR, CONNECTION_ERROR):
                 self.status.set(STATUS_ERROR)
-                self.issueHandler(SYNC_ERROR)
+                self.issueHandler(sync_result)
             else:
                 self.status.set(sync_result)
                 self.send['state']=NORMAL
@@ -336,15 +336,11 @@ class GUI:
                     last_search = Edge().sendContact(last_search, ctt, mode, message, path, self.speed)
                     wb.save(SHEET_PATH)
 
-                    if last_search == 'DEFAULT_ERROR':
+                    if last_search in (DEFAULT_ERROR, CONNECTION_ERROR):
                         result = STATUS_ERROR
-                        self.issueHandler(DEFAULT_ERROR)
+                        self.issueHandler(last_search)
                         break
-
-                    elif last_search == 'CONNECTION_ERROR':
-                        result = STATUS_ERROR
-                        self.issueHandler(CONNECTION_ERROR)
-                        break
+                    
                 else:
                     result = STATUS_STOP
                     Edge().resetScreen()
