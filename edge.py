@@ -78,9 +78,11 @@ class Edge:
             
         return result
 
-    def resetScreen(self):
+    def resetScreen(self, speed):
+        sleep(speed/2)
         for rpt in range(4): # Resets WhatsApp's screen to the default page
             webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        sleep(speed/2)
 
     def writeMessage(self, element, message, speed):
         text_field = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, element)))
@@ -117,10 +119,9 @@ class Edge:
                 wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, NEW_CHAT))).click()
 
             # Inserts contact number in the search bar
-            search_bar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR)))
+            search_bar = driver.switch_to.active_element
             search_bar.send_keys(str(contact_number))
 
-            wait.until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, SEARCH_BAR), contact_number))
             sleep(speed)
 
             # Looks for a valid contact number
@@ -158,7 +159,14 @@ class Edge:
 
                     # Found it
                     else:
-                        search_bar.send_keys(Keys.ENTER)                  
+                        search_bar.send_keys(Keys.ENTER)
+
+                        footer = int(driver.find_element(By.TAG_NAME, 'footer').get_attribute('childElementCount'))
+                        
+                        if footer == 1: # When a contact is blocked, all the child elements of the footer tag will be reduced to one 
+                            self.resetScreen(speed)
+                            contact[3].value = '✘'
+                            break # Doesn't send if the contact is currently blocked
 
                         match mode:
 
@@ -186,7 +194,7 @@ class Edge:
                             )
                         )                
                         # [ESC] is pressed, returning to the default screen                    
-                        sleep(speed/2); self.resetScreen()
+                        self.resetScreen(speed)
                         contact[3].value = '✔'
                         break
 

@@ -306,7 +306,7 @@ class GUI:
             self.running = True
             result = STATUS_DONE
 
-            Edge().resetScreen()
+            Edge().resetScreen(self.speed)
 
             # Set variables used to estimate time
             first_loop = True
