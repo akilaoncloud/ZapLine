@@ -2,7 +2,6 @@
 
     # New chat and search bar
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
-SEARCH_BAR = '#app div._aigw div[contenteditable="true"]'
 SEARCH_BAR_CLEAN_BUTTON = 'span[data-icon="x-alt"]'
 
     # Contacts list
@@ -21,7 +20,6 @@ ATTACH_PLUS_BUTTON = 'span[data-icon="plus"]'
 IMG_VID_BUTTON = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
     
     # Text input after attaching a file
-# FILE_TEXT_INPUT = '#app div[contenteditable="true"]'
 FILE_SEND_BUTTON = '#app div.x1n2onr6.x5yr21d.x6ikm8r.x10wlt62.x17dzmu4.xyyilfv.x1iyjqo2.xa1v5g2 span[data-icon="send"]'
 
 
