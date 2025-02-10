@@ -3,7 +3,7 @@ Projetado para automatizar o envio de textos e imagens em massa pelo WhatsApp We
 
 **Funciona apenas no navegador Edge. Outros navegadores estarão disponíveis em breve.**
  
-[![Static Badge](https://img.shields.io/badge/Baixe%20a%20versão%20mais%20recente-v1.0.5-blue)](https://github.com/akilaoncloud/ZapLine/releases/download/v1.0.5/ZapLine-win64-v1.0.5.zip)
+[![Static Badge](https://img.shields.io/badge/Baixe%20a%20versão%20mais%20recente-v1.0.6-blue)](https://github.com/akilaoncloud/ZapLine/releases/download/v1.0.6/ZapLine-win64-v1.0.6.zip)
 
 # Informações Básicas
 1. Extraia o arquivo baixado e execute o arquivo `ZapLine.exe`.
