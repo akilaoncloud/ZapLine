@@ -161,7 +161,7 @@ class Edge:
                     else:
                         search_bar.send_keys(Keys.ENTER)
 
-                        footer = int(driver.find_element(By.TAG_NAME, 'footer').get_attribute('childElementCount'))
+                        footer = int(wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'footer'))).get_attribute('childElementCount'))
                         
                         if footer == 1: # When a contact is blocked, all the child elements of the footer tag will be reduced to one 
                             self.resetScreen(speed)
