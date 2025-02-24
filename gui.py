@@ -343,7 +343,7 @@ class GUI:
                     
                 else:
                     result = STATUS_STOP
-                    Edge().resetScreen()
+                    Edge().resetScreen(self.speed)
                     break
 
                 first_loop = False
