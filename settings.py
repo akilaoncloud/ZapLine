@@ -31,7 +31,7 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - WhatsApp'
+GUI_TITLE = 'Zapline - v1.0.7'
 SHEET_WINDOW_TITLE = 'Editar Planilha'
 GUI_THEME = 'solar'
 
