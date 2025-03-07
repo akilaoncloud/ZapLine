@@ -31,7 +31,7 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.0.8'
+GUI_TITLE = 'Zapline - v1.0.9'
 SHEET_WINDOW_TITLE = 'Editar Planilha'
 GUI_THEME = 'solar'
 
@@ -57,6 +57,10 @@ SEND_CHOOSE_MODE = 'Escolha uma opção de envio:'
 SEND_MESSAGE_MODE = 'Apenas Mensagem'
 SEND_IMAGE_MODE = 'Apenas Imagem'
 SEND_IMG_MSG_MODE = 'Mensagem + Imagem'
+
+RESET_EDGE_TITLE = 'Encerrar Microsoft Edge'
+RESET_EDGE_TEXT_QUESTION = 'Deseja realmente fechar o Edge? Todas as abas serão fechadas.'
+RESET_EDGE_TEXT_SUCCESS = 'Microsoft Edge foi fechado com sucesso!'
 
     # Status
 STATUS_DEFAULT = 'Sincronize seu telefone:'
@@ -91,5 +95,6 @@ BUTTON_SEND = 'Iniciar'
 BUTTON_STOP = 'Parar'
 
     #ToolTips
+RESET_EDGE_TOOLTIP = 'Clique neste botão apenas se estiver enfrentando problemas de sincronização. Isso encerrará todas as instâncias do Microsoft Edge e fechará todas as suas abas abertas.\n\n Caso não tenha certeza, evite usá-lo.'
 SCALE_TOOLTIP = 'Conexões ou computadores lentos podem ocasionar erros no envio. Aumente o tempo de espera entre as etapas para compensar a lentidão.\n\n Caso não tenha certeza, deixe em: "1.0s".'
 N_LIN_TOOLTIP = 'Digite, da aba, o número da linha que deseja iniciar o envio. Quando em branco, a primeira linha é a padrão.\n\n Caso não tenha certeza, deixe em branco.'
