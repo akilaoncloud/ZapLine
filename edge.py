@@ -20,6 +20,12 @@ from settings import *
 
 class Edge:
 
+    def quitBrowser(self):
+        try: # Tries to quit in case the browser is still open
+            driver.quit()
+        except: # If it's already closed, it does nothing
+            pass
+
     def syncBrowser(self):
         global driver
         global EdgeOptions
@@ -27,54 +33,51 @@ class Edge:
         global wait
         global ignore
 
-        try: # Tries to quit in case the browser is still open
-            driver.quit()
-        except: # If it's already closed, it does nothing
-            pass
+        self.quitBrowser()
 
-        finally:
+        try:
+            # Configures the Browser
+            EdgeOptions = Options() # Add preferences on how to open the browser
+            EdgeOptions.add_argument('--start-maximized') # Opens maximized
+            EdgeOptions.add_argument('--no-first-run') # Opens faster
+            EdgeOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
+            EdgeOptions.add_argument('--guest') # Opens in guest mode, without looking for profiles
+            # Opens with user profile - EdgeOptions.add_argument(r'--user-data-dir=C:\Users\"YOUR_USERNAME"\AppData\Local\Microsoft\Edge\User Data') 
+            EdgeService = Service(EdgeChromiumDriverManager().install())
 
-            try:
-                # Configures the Browser
-                EdgeOptions = Options() # Add preferences on how to open the browser
-                EdgeOptions.add_argument('--start-maximized') # Opens maximized
-                EdgeOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
-                # EdgeOptions.add_argument(r'--user-data-dir=C:\Users\"YOUR_USERNAME"\AppData\Local\Microsoft\Edge\User Data') # Opens with user profile
-                EdgeService = Service(EdgeChromiumDriverManager().install())
+            # Constructs the Browser
+            driver = webdriver.Edge(options=EdgeOptions, service=EdgeService)
+            driver.get('https://web.whatsapp.com/')
 
-                # Constructs the Browser
-                driver = webdriver.Edge(options=EdgeOptions, service=EdgeService)
-                driver.get('https://web.whatsapp.com/')
+            ignore = (NoSuchElementException, StaleElementReferenceException) # Ignores old or non existent elements
+            wait = WebDriverWait(driver, WAIT_TIME, ignored_exceptions=ignore) # Tolerates x seconds
 
-                ignore = (NoSuchElementException, StaleElementReferenceException) # Ignores old or non existent elements
-                wait = WebDriverWait(driver, WAIT_TIME, ignored_exceptions=ignore) # Tolerates x seconds
+            # SYNC_TIME minutes to sync your WhatsApp
+            WebDriverWait(driver, SYNC_TIME).until(EC.element_to_be_clickable((By.CSS_SELECTOR, NEW_CHAT)))
 
-                # SYNC_TIME minutes to sync your WhatsApp
-                WebDriverWait(driver, SYNC_TIME).until(EC.element_to_be_clickable((By.CSS_SELECTOR, NEW_CHAT)))
-
-            except ConnectionError: # Internet error
+        except ConnectionError: # Internet error
+        
+            result = CONNECTION_ERROR
+            logging.error(format_exc())
             
-                result = CONNECTION_ERROR
-                logging.error(format_exc())
-                
-                try: # Tries to quit in case the browser is still open
-                    driver.quit()
-                except: # If it's already closed, it does nothing
-                    pass
+            try: # Tries to quit in case the browser is still open
+                driver.quit()
+            except: # If it's already closed, it does nothing
+                pass
 
-            except Exception as e: # In case of any other error
-                
-                result = SYNC_ERROR
-                logging.error(format_exc())
-                
-                try: # Tries to quit in case the browser is still open
-                    driver.quit()
-                except: # If it's already closed, it does nothing
-                    pass
+        except Exception as e: # In case of any other error
+            
+            result = SYNC_ERROR
+            logging.error(format_exc())
+            
+            try: # Tries to quit in case the browser is still open
+                driver.quit()
+            except: # If it's already closed, it does nothing
+                pass
 
-            else:
-                # Synchronized
-                result = STATUS_SYNCED
+        else:
+            # Synchronized
+            result = STATUS_SYNCED
             
         return result
 

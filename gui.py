@@ -10,7 +10,9 @@ from os import startfile, chdir
 from time import time
 from datetime import timedelta
 import threading
+from traceback import format_exc
 import logging
+import sys
 
 from settings import *
 from edge import Edge
@@ -26,6 +28,11 @@ class GUI:
 
         # Creates a log file, so it doesn't need to open a terminal.
         logging.basicConfig(filename='session.log', filemode='w', encoding='utf-8', level=logging.INFO) # Standard
+
+    def OnClosing(self):
+        window.destroy()
+        Edge().quitBrowser()
+        sys.exit(0)
 
     def syncWorkbook(self, read):
         try:
@@ -235,10 +242,15 @@ class GUI:
         self.str_tab.trace_add('write', self.checkTabs)
         self.str_lin.trace_add('write', self.checkEntries)
 
+        window.protocol("WM_DELETE_WINDOW", self.OnClosing)
         mainloop()
 
     def issueHandler(self, error):
-        messagebox.showerror(title=ERROR_TITLE, message=error)
+        try:
+            if window.winfo_exists(): # Checks if main window is open before spawning a error box
+                messagebox.showerror(title=ERROR_TITLE, message=error)
+        except: # That way, if the program is abruptly closed. The errors will be silenced
+            pass
 
     def threadStop(self):
         self.status.set(STATUS_STOPPING)
@@ -248,126 +260,132 @@ class GUI:
     def threadSync(self):
 
         def sync():
-            self.sync['state']=DISABLED
-            self.send['state']=DISABLED
+            try:
+                self.sync['state']=DISABLED
+                self.send['state']=DISABLED
 
-            self.status.set(STATUS_SYNCING)
-            sync_result = Edge().syncBrowser()
+                self.status.set(STATUS_SYNCING)
+                sync_result = Edge().syncBrowser()
 
-            if sync_result in (SYNC_ERROR, CONNECTION_ERROR):
-                self.status.set(STATUS_ERROR)
-                self.issueHandler(sync_result)
-            else:
-                self.status.set(sync_result)
-                self.send['state']=NORMAL
+                if sync_result in (SYNC_ERROR, CONNECTION_ERROR):
+                    self.issueHandler(sync_result)
+                    self.status.set(STATUS_ERROR)
+                else:
+                    self.status.set(sync_result)
+                    self.send['state']=NORMAL
 
-            self.sync['state']=NORMAL
-
+                self.sync['state']=NORMAL
+            except:
+                logging.error(format_exc())
+        
         threading.Thread(target=sync).start()
 
     def threadSend(self):
 
         def send():
-            tab_name = str(self.str_tab.get())
-
-            if not self.syncWorkbook(False):
-                return None
-            
             try:
-                tab = wb[tab_name]
-            except KeyError:
-                self.issueHandler(NO_TAB_ERROR)
-                return None
+                tab_name = str(self.str_tab.get())
 
-            self.status.set(STATUS_SENDING)
+                if not self.syncWorkbook(False):
+                    return None
+                
+                try:
+                    tab = wb[tab_name]
+                except KeyError:
+                    self.issueHandler(NO_TAB_ERROR)
+                    return None
 
-            self.msg['state']=DISABLED
-            self.bt_sheet['state']=DISABLED
-            self.insert_img['state']=DISABLED
+                self.status.set(STATUS_SENDING)
 
-            self.nm_tab['state']=DISABLED
-            self.n_lin['state']=DISABLED
-            self.rd_msg['state']=DISABLED
-            self.rd_img['state']=DISABLED
-            self.rd_msg_img['state']=DISABLED
+                self.msg['state']=DISABLED
+                self.bt_sheet['state']=DISABLED
+                self.insert_img['state']=DISABLED
 
-            self.sync['state']=DISABLED
-            self.stop['state']=NORMAL
-            self.send['state']=DISABLED
-            
-            lin_start = 2 if self.str_lin.get()=='' else int(self.str_lin.get())+1
-            mode = int(self.mode.get())
-            # 'line_one.character_zero', 'end_of_text - 1 character (\n)'
-            raw_message = str(self.msg.get('1.0','end-1c'))
-            message = raw_message.replace('\xa0', ' ').rstrip('\n') # Remove this characters from the end of the string
-            path = self.path
-            last_search = ''
+                self.nm_tab['state']=DISABLED
+                self.n_lin['state']=DISABLED
+                self.rd_msg['state']=DISABLED
+                self.rd_img['state']=DISABLED
+                self.rd_msg_img['state']=DISABLED
 
-            self.running = True
-            result = STATUS_DONE
+                self.sync['state']=DISABLED
+                self.stop['state']=NORMAL
+                self.send['state']=DISABLED
+                
+                lin_start = 2 if self.str_lin.get()=='' else int(self.str_lin.get())+1
+                mode = int(self.mode.get())
+                # 'line_one.character_zero', 'end_of_text - 1 character (\n)'
+                raw_message = str(self.msg.get('1.0','end-1c'))
+                message = raw_message.replace('\xa0', ' ').rstrip('\n') # Remove this characters from the end of the string
+                path = self.path
+                last_search = ''
 
-            Edge().resetScreen(self.speed)
+                self.running = True
+                result = STATUS_DONE
 
-            # Set variables used to estimate time
-            first_loop = True
-            estimated_time = STATUS_ESTIMATIVE_CALC
-            time_per_contact = []
+                Edge().resetScreen(self.speed)
 
-            # Searches contacts one by one
-            for ctt in tab.iter_rows(min_row=lin_start):
-                contact = ctt[1].row-1
-                contacts = tab.max_row-1
+                # Set variables used to estimate time
+                first_loop = True
+                estimated_time = STATUS_ESTIMATIVE_CALC
+                time_per_contact = []
 
-                if not first_loop:
-                    time_per_contact.append(int(time() - start_time))
+                # Searches contacts one by one
+                for ctt in tab.iter_rows(min_row=lin_start):
+                    contact = ctt[1].row-1
+                    contacts = tab.max_row-1
 
-                    estimated_time_per_contact = int(sum(time_per_contact) / len(time_per_contact))
-                    contacts_left = contacts - contact + 1
+                    if not first_loop:
+                        time_per_contact.append(int(time() - start_time))
 
-                    estimative = contacts_left * estimated_time_per_contact
+                        estimated_time_per_contact = int(sum(time_per_contact) / len(time_per_contact))
+                        contacts_left = contacts - contact + 1
 
-                    estimated_time = timedelta(seconds=estimative)
+                        estimative = contacts_left * estimated_time_per_contact
 
-                self.status.set(f'{STATUS_SENDING} ({contact}/{contacts})\n{STATUS_ESTIMATIVE_LABEL} {estimated_time}')
+                        estimated_time = timedelta(seconds=estimative)
 
-                start_time = time()
+                    self.status.set(f'{STATUS_SENDING} ({contact}/{contacts})\n{STATUS_ESTIMATIVE_LABEL} {estimated_time}')
 
-                if self.running:
-                    last_search = Edge().sendContact(last_search, ctt, mode, message, path, self.speed)
-                    wb.save(SHEET_PATH)
+                    start_time = time()
 
-                    if last_search in (DEFAULT_ERROR, CONNECTION_ERROR):
-                        result = STATUS_ERROR
-                        self.issueHandler(last_search)
+                    if self.running:
+                        last_search = Edge().sendContact(last_search, ctt, mode, message, path, self.speed)
+                        wb.save(SHEET_PATH)
+
+                        if last_search in (DEFAULT_ERROR, CONNECTION_ERROR):
+                            self.issueHandler(last_search)
+                            result = STATUS_ERROR
+                            break
+                        
+                    else:
+                        result = STATUS_STOP
+                        Edge().resetScreen(self.speed)
                         break
-                    
-                else:
-                    result = STATUS_STOP
-                    Edge().resetScreen(self.speed)
-                    break
 
-                first_loop = False
+                    first_loop = False
 
-            self.status.set(result)
+                self.status.set(result)
 
-            # Tries to reset the sheet to keep errors away
-            wb.save(SHEET_PATH)
-            self.syncWorkbook(True)
-            # The errors only occur when the sheet is not closed before sending the messages
+                # Tries to reset the sheet to keep errors away
+                wb.save(SHEET_PATH)
+                self.syncWorkbook(True)
+                # The errors only occur when the sheet is not closed before sending the messages
 
-            self.msg['state']=NORMAL
-            self.bt_sheet['state']=NORMAL
-            self.insert_img['state']=NORMAL
+                self.msg['state']=NORMAL
+                self.bt_sheet['state']=NORMAL
+                self.insert_img['state']=NORMAL
 
-            self.nm_tab['state']=NORMAL
-            self.n_lin['state']=NORMAL
-            self.rd_msg['state']=NORMAL
-            self.checkImage()
+                self.nm_tab['state']=NORMAL
+                self.n_lin['state']=NORMAL
+                self.rd_msg['state']=NORMAL
+                self.checkImage()
 
-            self.stop['state']=DISABLED
-            self.sync['state']=NORMAL
-            self.send['state']=NORMAL
+                self.stop['state']=DISABLED
+                self.sync['state']=NORMAL
+                self.send['state']=NORMAL
+            except:
+                logging.error(format_exc())
 
-        threading.Thread(target=send).start()  
+        threading.Thread(target=send).start()
         
 GUI().openApp()
