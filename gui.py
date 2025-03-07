@@ -12,6 +12,7 @@ from datetime import timedelta
 import threading
 from traceback import format_exc
 import logging
+import subprocess
 import sys
 
 from settings import *
@@ -33,6 +34,12 @@ class GUI:
         window.destroy()
         Edge().quitBrowser()
         sys.exit(0)
+
+    def resetEdge(self):
+        if messagebox.askyesno(RESET_EDGE_TITLE, RESET_EDGE_TEXT_QUESTION):
+            subprocess.run(["taskkill", "/F", "/IM", "msedge.exe", "/T"], shell=True)
+            subprocess.run(["taskkill", "/F", "/IM", "msedgedriver.exe", "/T"], shell=True)
+            messagebox.showinfo(RESET_EDGE_TITLE, RESET_EDGE_TEXT_SUCCESS)
 
     def syncWorkbook(self, read):
         try:
@@ -152,8 +159,17 @@ class GUI:
         self.msg = Text(window, width=50)
         self.msg.grid(row=1,column=0, sticky=NSEW, padx=15)
         # Button - Sheet file
-        self.bt_sheet = tb.Button(window, text = BUTTON_OPEN_SHEET, command = self.openSheet)
-        self.bt_sheet.grid(row=2,column=0, pady=10)
+        self.settings = tb.Frame(window)
+
+        self.bt_sheet = tb.Button(self.settings, text = BUTTON_OPEN_SHEET, command = self.openSheet)
+        self.bt_sheet.pack(side=LEFT, padx=5)
+
+        self.bt_edge = tb.Button(self.settings, text = '⚙️', command = self.resetEdge)
+        self.bt_edge.pack(side=LEFT, padx=5)
+
+        self.settings.grid(row=2,column=0, pady=10)
+
+        ToolTip(self.bt_edge, text=RESET_EDGE_TOOLTIP, bootstyle=(WARNING, INVERSE))
 
         # Canvas - Image preview
         self.canvas = tb.Canvas(window, background='#073642', highlightbackground='#0B5162', highlightthickness=1, autostyle=FALSE)
@@ -167,20 +183,20 @@ class GUI:
         self.path = ''
         
         # Frame - Message configurations
-        self.config_msg = tb.Frame(window)
+        self.adjust_msg = tb.Frame(window)
 
         self.syncWorkbook(True)
     
         self.str_tab = StringVar()
-        lbl_tab = tb.Label(self.config_msg, text = LABEL_TAB_DROPDOWN)
+        lbl_tab = tb.Label(self.adjust_msg, text = LABEL_TAB_DROPDOWN)
         lbl_tab.pack(pady=8)
-        self.nm_tab = tb.OptionMenu(self.config_msg, self.str_tab, DEFAULT_TAB_OPTION, *wb.sheetnames)
+        self.nm_tab = tb.OptionMenu(self.adjust_msg, self.str_tab, DEFAULT_TAB_OPTION, *wb.sheetnames)
         self.nm_tab.pack(pady=8, fill='x')
 
         self.str_lin = StringVar()
-        lbl_lin = tb.Label(self.config_msg, text = LABEL_LINE_ENTRY)
+        lbl_lin = tb.Label(self.adjust_msg, text = LABEL_LINE_ENTRY)
         lbl_lin.pack(pady=8)
-        self.n_lin = tb.Entry(self.config_msg, textvariable=self.str_lin, state=DISABLED) # In-line textbox
+        self.n_lin = tb.Entry(self.adjust_msg, textvariable=self.str_lin, state=DISABLED) # In-line textbox
         self.n_lin.pack(pady=8, fill='x')
 
         ToolTip(self.n_lin, text=N_LIN_TOOLTIP, bootstyle=(WARNING, INVERSE))
@@ -188,10 +204,10 @@ class GUI:
         # Choose a mode
         self.mode = StringVar(value=0)
 
-        lbl_mode = tb.Label(self.config_msg, text = SEND_CHOOSE_MODE)
+        lbl_mode = tb.Label(self.adjust_msg, text = SEND_CHOOSE_MODE)
         lbl_mode.pack(pady=8)
 
-        radio_modes = tb.Frame(self.config_msg)
+        radio_modes = tb.Frame(self.adjust_msg)
 
         self.rd_msg = tb.Radiobutton(radio_modes, text = SEND_MESSAGE_MODE, value = 0, variable = self.mode) # Msg button (0)
         self.rd_msg.pack(pady=8, anchor=W)
@@ -205,14 +221,14 @@ class GUI:
         radio_modes.pack()
 
         # Status placed
-        self.whats = tb.Label(self.config_msg, textvariable = self.status)
+        self.whats = tb.Label(self.adjust_msg, textvariable = self.status)
         self.whats.pack(pady=8)
 
         # Start and stop
-        self.sync = tb.Button(self.config_msg, text = BUTTON_SYNC, command = self.threadSync, state=NORMAL)
+        self.sync = tb.Button(self.adjust_msg, text = BUTTON_SYNC, command = self.threadSync, state=NORMAL)
         self.sync.pack(pady=8)
 
-        strt_stop = tb.Frame(self.config_msg)
+        strt_stop = tb.Frame(self.adjust_msg)
 
         self.send = tb.Button(strt_stop, text = BUTTON_SEND, command = self.threadSend, state=DISABLED)
         self.send.pack(pady=8, side=LEFT)
@@ -223,20 +239,20 @@ class GUI:
         strt_stop.pack()
 
         # Speed Scaler
-        scale_frame = tb.Frame(self.config_msg)
+        self.scale_frame = tb.Frame(self.adjust_msg)
 
         self.n_speed = StringVar()
-        self.scale = tb.Scale(scale_frame, from_=5, to=0.5, length=200, value=1, command=self.scaler)
+        self.scale = tb.Scale(self.scale_frame, from_=5, to=0.5, length=200, value=1, command=self.scaler)
         self.scale.pack(pady=8)
-        lbl_speed = tb.Label(scale_frame, textvariable = self.n_speed)
+        lbl_speed = tb.Label(self.scale_frame, textvariable = self.n_speed)
         lbl_speed.pack(pady=[0,8])
 
-        scale_frame.pack()
-        ToolTip(scale_frame, text=SCALE_TOOLTIP, bootstyle=(WARNING, INVERSE))
+        self.scale_frame.pack()
+        ToolTip(self.scale, text=SCALE_TOOLTIP, bootstyle=(WARNING, INVERSE))
         
         self.scaler()
 
-        self.config_msg.grid(row=0,rowspan=3,column=2, padx=25)
+        self.adjust_msg.grid(row=0,rowspan=3,column=2, padx=25)
 
         self.nm_tab.bind('<Button-1>', self.updateTabs)
         self.str_tab.trace_add('write', self.checkTabs)
