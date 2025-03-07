@@ -279,6 +279,7 @@ class GUI:
             try:
                 self.sync['state']=DISABLED
                 self.send['state']=DISABLED
+                self.bt_edge['state']=DISABLED
 
                 self.status.set(STATUS_SYNCING)
                 sync_result = Edge().syncBrowser()
@@ -291,6 +292,7 @@ class GUI:
                     self.send['state']=NORMAL
 
                 self.sync['state']=NORMAL
+                self.bt_edge['state']=NORMAL
             except:
                 logging.error(format_exc())
         
@@ -315,6 +317,7 @@ class GUI:
 
                 self.msg['state']=DISABLED
                 self.bt_sheet['state']=DISABLED
+                self.bt_edge['state']=DISABLED
                 self.insert_img['state']=DISABLED
 
                 self.nm_tab['state']=DISABLED
@@ -360,11 +363,11 @@ class GUI:
 
                         estimated_time = timedelta(seconds=estimative)
 
-                    self.status.set(f'{STATUS_SENDING} ({contact}/{contacts})\n{STATUS_ESTIMATIVE_LABEL} {estimated_time}')
-
-                    start_time = time()
-
                     if self.running:
+                        self.status.set(f'{STATUS_SENDING} ({contact}/{contacts})\n{STATUS_ESTIMATIVE_LABEL} {estimated_time}')
+
+                        start_time = time()
+
                         last_search = Edge().sendContact(last_search, ctt, mode, message, path, self.speed)
                         wb.save(SHEET_PATH)
 
@@ -389,6 +392,7 @@ class GUI:
 
                 self.msg['state']=NORMAL
                 self.bt_sheet['state']=NORMAL
+                self.bt_edge['state']=NORMAL
                 self.insert_img['state']=NORMAL
 
                 self.nm_tab['state']=NORMAL
