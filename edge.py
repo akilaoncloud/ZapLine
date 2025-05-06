@@ -42,7 +42,7 @@ class Edge:
             EdgeOptions.add_argument('--no-first-run') # Opens faster
             EdgeOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
             EdgeOptions.add_argument('--guest') # Opens in guest mode, without looking for profiles
-            # Opens with user profile - EdgeOptions.add_argument(r'--user-data-dir=C:\Users\"YOUR_USERNAME"\AppData\Local\Microsoft\Edge\User Data') 
+            #EdgeOptions.add_argument(r'--user-data-dir=C:\Users\"USERNAME"\AppData\Local\Microsoft\Edge\User Data') # Opens with user profile
             EdgeService = Service(EdgeChromiumDriverManager().install())
 
             # Constructs the Browser
