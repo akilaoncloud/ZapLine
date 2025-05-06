@@ -5,7 +5,7 @@ Projetado para automatizar o envio de textos e imagens em massa pelo WhatsApp We
 
 # Guia de Instalação
 
-[![Static Badge](https://img.shields.io/badge/Baixe%20a%20versão%20mais%20recente-v1.0.9-blue)](https://github.com/akilaoncloud/ZapLine/releases/download/v1.0.9/ZapLine-win64-v1.0.9.zip)
+[![Static Badge](https://img.shields.io/badge/Baixe%20a%20versão%20mais%20recente-v1.0.10-blue)](https://github.com/akilaoncloud/ZapLine/releases/download/v1.0.10/ZapLine-win64-v1.0.10.zip)
 1. Baixe o arquivo compactado, extraia e execute o arquivo `ZapLine`.
 2. Não exclua a pasta `_internal`, ela é necessária para o funcionamento do programa.
 3. **(Recomendado)** Mantenha a pasta do programa em um dos diretórios: `Downloads`, `Documentos` ou `Área de Trabalho`.
