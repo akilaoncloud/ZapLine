@@ -2,7 +2,7 @@
 
     # New chat and search bar
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
-SEARCH_BAR_CLEAN_BUTTON = 'span[data-icon="x-alt"]'
+SEARCH_BAR_CLEAN_BUTTON = 'span[data-icon="close-refreshed"]'
 
     # Contacts list
 CHAT_LIST = '#app div._aigw div[role="button"] div._ak8n' # It clicks on the photo
@@ -13,14 +13,14 @@ OFFLINE_SUBTITLE = '#app div._aigw div.x1c436fg'
     
     # Main text inputs
 MAIN_TEXT_INPUT = '#main > footer div._ak1r div[contenteditable="true"]'
-MAIN_SEND_BUTTON = '#main > footer div._ak1r span[data-icon="send"]'
+MAIN_SEND_BUTTON = '#main > footer div._ak1r span[data-icon="wds-ic-send-filled"]'
     
     # Clip icon - files to attach
-ATTACH_PLUS_BUTTON = 'span[data-icon="plus"]'
+ATTACH_PLUS_BUTTON = 'span[data-icon="plus-rounded"]'
 IMG_VID_BUTTON = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
     
     # Text input after attaching a file
-FILE_SEND_BUTTON = '#app div.x1n2onr6.x5yr21d.x6ikm8r.x10wlt62.x17dzmu4.xyyilfv.x1iyjqo2.xa1v5g2 span[data-icon="send"]'
+FILE_SEND_BUTTON = '#app div.x1n2onr6.x5yr21d.x6ikm8r.x10wlt62.x17dzmu4.xyyilfv.x1iyjqo2.xa1v5g2 span[data-icon="wds-ic-send-filled"]'
 
 
 # DEFAULT APP VALUES
@@ -31,7 +31,7 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.0.9'
+GUI_TITLE = 'Zapline - v1.0.10'
 SHEET_WINDOW_TITLE = 'Editar Planilha'
 GUI_THEME = 'solar'
 
