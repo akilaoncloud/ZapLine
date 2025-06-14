@@ -134,9 +134,9 @@ class Edge:
                 try: 
                     search = wait.until(
                         EC.any_of(
-                            EC.visibility_of_element_located((By.CSS_SELECTOR, CHAT_LIST)),
+                            EC.visibility_of_element_located((By.CSS_SELECTOR, OFFLINE_SUBTITLE)),
                             EC.visibility_of_element_located((By.CSS_SELECTOR, RESULTS_SUBTITLE)),
-                            EC.visibility_of_element_located((By.CSS_SELECTOR, OFFLINE_SUBTITLE))
+                            EC.visibility_of_element_located((By.CSS_SELECTOR, CHAT_LIST))
                         )
                     ).text
 
