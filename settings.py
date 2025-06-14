@@ -8,7 +8,7 @@ SEARCH_BAR_CLEAN_BUTTON = 'span[data-icon="close-refreshed"]'
 CHAT_LIST = '#app div._aigw div[role="button"] div._ak8n' # It clicks on the photo
     
     # Looking outside | No results found
-RESULTS_SUBTITLE = '#app div._aigw span:has([class="_ao3e"])' # :not stops selenium from selecting existent chats
+RESULTS_SUBTITLE = '#app div._aigw span:has([class="_ao3e"]) span._ao3e' # :not stops selenium from selecting existent chats
 OFFLINE_SUBTITLE = '#app div._aigw div.x1c436fg'
     
     # Main text inputs
@@ -31,7 +31,7 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.0.10'
+GUI_TITLE = 'Zapline - v1.0.11'
 SHEET_WINDOW_TITLE = 'Editar Planilha'
 GUI_THEME = 'solar'
 
