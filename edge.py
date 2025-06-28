@@ -87,8 +87,8 @@ class Edge:
             webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         sleep(speed/2)
 
-    def writeMessage(self, element, message, speed):
-        text_field = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, element)))
+    def writeMessage(self, message, speed):
+        text_field = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, MAIN_TEXT_INPUT)))
 
         lenght_msg = len(message.split("\n"))
         count_lin = 1
@@ -103,11 +103,24 @@ class Edge:
 
         text_field.click()
         
-        sleep(speed); return text_field
+        sleep(speed)
 
     def attachPhoto(self, path):
-        wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ATTACH_PLUS_BUTTON))).click()
+        wait.until(
+            EC.any_of(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, ATTACH_PLUS_BUTTON[0])),
+                EC.element_to_be_clickable((By.CSS_SELECTOR, ATTACH_PLUS_BUTTON[1]))
+            )
+        ).click()
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, IMG_VID_BUTTON))).send_keys(path)
+
+    def sendIt(self, element):
+        wait.until(
+            EC.any_of(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, element[0])),
+                EC.element_to_be_clickable((By.CSS_SELECTOR, element[1]))
+            )
+        ).click()
 
     def sendContact(self, last_search, contact, mode, message, path, speed): 
         # It can retry on finding a contact
@@ -148,7 +161,12 @@ class Edge:
                     logging.info(search)
 
                     if contact_number in search: # No results found for 'contact_number'
-                        wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR_CLEAN_BUTTON))).click()
+                        wait.until(
+                            EC.any_of(
+                                EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR_CLEAN_BUTTON[0])),
+                                EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR_CLEAN_BUTTON[1]))
+                            )
+                        ).click()
                         contact[3].value = '✘'
                         search = 'Not Found'
                         break
@@ -164,7 +182,13 @@ class Edge:
                     else:
                         search_bar.send_keys(Keys.ENTER)
 
-                        footer = int(wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'footer'))).get_attribute('childElementCount'))
+                        try:
+                            footer = int(wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'footer'))).get_attribute('childElementCount'))
+
+                        except TimeoutException: # Retries if contact was not opened
+                            logging.warning('\n\nTimeOutFooter - Retrying...\n\n')
+                            search_bar.send_keys(Keys.ENTER)
+                            footer = int(wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'footer'))).get_attribute('childElementCount'))
                         
                         if footer == 1: # When a contact is blocked, all the child elements of the footer tag will be reduced to one 
                             self.resetScreen(speed)
@@ -174,25 +198,28 @@ class Edge:
                         match mode:
 
                             case 0: # Only message
-                                msg = self.writeMessage(MAIN_TEXT_INPUT, message, speed)
-                                msg.send_keys(Keys.ENTER)
+                                self.writeMessage(message, speed)
+                                self.sendIt(MAIN_SEND_BUTTON)
 
                             case 1: # Only image
                                 self.attachPhoto(path)
-                                wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, FILE_SEND_BUTTON))).click()
+                                self.sendIt(FILE_SEND_BUTTON)
 
                             case 2: # Message and Image
-                                self.writeMessage(MAIN_TEXT_INPUT, message, speed)
-
+                                self.writeMessage(message, speed)
                                 self.attachPhoto(path)
-                                
-                                wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, FILE_SEND_BUTTON))).click()
-                                #wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, FILE_TEXT_INPUT))).send_keys(Keys.ENTER)
+                                self.sendIt(FILE_SEND_BUTTON)
 
                         wait.until( # Check if both the send buttons are gone
                             EC.all_of(
-                                EC.invisibility_of_element((By.CSS_SELECTOR, FILE_SEND_BUTTON)),
-                                EC.invisibility_of_element((By.CSS_SELECTOR, MAIN_SEND_BUTTON)),
+                                EC.any_of(
+                                    EC.invisibility_of_element((By.CSS_SELECTOR, FILE_SEND_BUTTON[0])),
+                                    EC.invisibility_of_element((By.CSS_SELECTOR, FILE_SEND_BUTTON[1]))
+                                ),
+                                EC.any_of(
+                                    EC.invisibility_of_element((By.CSS_SELECTOR, MAIN_SEND_BUTTON[0])),
+                                    EC.invisibility_of_element((By.CSS_SELECTOR, MAIN_SEND_BUTTON[1]))
+                                ),
                                 EC.element_to_be_clickable((By.CSS_SELECTOR, MAIN_TEXT_INPUT))
                             )
                         )                

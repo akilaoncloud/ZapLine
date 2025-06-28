@@ -39,6 +39,7 @@ class GUI:
         if messagebox.askyesno(RESET_EDGE_TITLE, RESET_EDGE_TEXT_QUESTION):
             subprocess.run(["taskkill", "/F", "/IM", "msedge.exe", "/T"], shell=True)
             subprocess.run(["taskkill", "/F", "/IM", "msedgedriver.exe", "/T"], shell=True)
+            subprocess.run(["taskkill", "/F", "/IM", "msedgewebview2.exe", "/T"], shell=True)
             messagebox.showinfo(RESET_EDGE_TITLE, RESET_EDGE_TEXT_SUCCESS)
 
     def syncWorkbook(self, read):
