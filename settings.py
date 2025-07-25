@@ -46,7 +46,7 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.0.12'
+GUI_TITLE = 'Zapline - v1.0.13'
 SHEET_WINDOW_TITLE = 'Editar Planilha'
 GUI_THEME = 'solar'
 
