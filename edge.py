@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver  # pip install selenium
 
 from selenium.common.exceptions import *
@@ -5,7 +6,6 @@ from requests.exceptions import ConnectionError
 
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.edge.service import Service
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.webdriver.support.wait import WebDriverWait
 
 from selenium.webdriver.common.keys import Keys
@@ -36,6 +36,8 @@ class Edge:
         self.quitBrowser()
 
         try:
+            os.environ["SE_DRIVER_MIRROR_URL"] = "https://msedgedriver.microsoft.com" # Temporary patch. Microsoft changed the location of the Edge Webdriver.
+
             # Configures the Browser
             EdgeOptions = Options() # Add preferences on how to open the browser
             EdgeOptions.add_argument('--start-maximized') # Opens maximized
@@ -43,7 +45,7 @@ class Edge:
             EdgeOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
             EdgeOptions.add_argument('--guest') # Opens in guest mode, without looking for profiles
             #EdgeOptions.add_argument(r'--user-data-dir=C:\Users\"USERNAME"\AppData\Local\Microsoft\Edge\User Data') # Opens with user profile
-            EdgeService = Service(EdgeChromiumDriverManager().install())
+            EdgeService = Service()
 
             # Constructs the Browser
             driver = webdriver.Edge(options=EdgeOptions, service=EdgeService)
