@@ -1,4 +1,3 @@
-import os
 from selenium import webdriver  # pip install selenium
 
 from selenium.common.exceptions import *
@@ -18,7 +17,7 @@ import logging
 
 from settings import *
 
-class Edge:
+class Browser:
 
     def quitBrowser(self):
         try: # Tries to quit in case the browser is still open
@@ -28,27 +27,25 @@ class Edge:
 
     def syncBrowser(self):
         global driver
-        global EdgeOptions
-        global EdgeService
+        global BrowserOptions
+        global BrowserService
         global wait
         global ignore
 
         self.quitBrowser()
 
         try:
-            os.environ["SE_DRIVER_MIRROR_URL"] = "https://msedgedriver.microsoft.com" # Temporary patch. Microsoft changed the location of the Edge Webdriver.
-
             # Configures the Browser
-            EdgeOptions = Options() # Add preferences on how to open the browser
-            EdgeOptions.add_argument('--start-maximized') # Opens maximized
-            EdgeOptions.add_argument('--no-first-run') # Opens faster
-            EdgeOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
-            EdgeOptions.add_argument('--guest') # Opens in guest mode, without looking for profiles
-            #EdgeOptions.add_argument(r'--user-data-dir=C:\Users\"USERNAME"\AppData\Local\Microsoft\Edge\User Data') # Opens with user profile
-            EdgeService = Service()
+            BrowserOptions = Options() # Add preferences on how to open the browser
+            BrowserOptions.add_argument('--start-maximized') # Opens maximized
+            BrowserOptions.add_argument('--no-first-run') # Opens faster
+            BrowserOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
+            BrowserOptions.add_argument('--guest') # Opens in guest mode, without looking for profiles
+            #BrowserOptions.add_argument(r'--user-data-dir=C:\Users\"USERNAME"\AppData\Local\Microsoft\Edge\User Data') # Opens with user profile
+            BrowserService = Service()
 
             # Constructs the Browser
-            driver = webdriver.Edge(options=EdgeOptions, service=EdgeService)
+            driver = webdriver.Edge(options=BrowserOptions, service=BrowserService)
             driver.get('https://web.whatsapp.com/')
 
             ignore = (NoSuchElementException, StaleElementReferenceException) # Ignores old or non existent elements

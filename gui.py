@@ -16,7 +16,7 @@ import subprocess
 import sys
 
 from settings import *
-from edge import Edge
+from browser import Browser
 
 import openpyxl # pip install openpyxl
 
@@ -32,7 +32,7 @@ class GUI:
 
     def OnClosing(self):
         window.destroy()
-        Edge().quitBrowser()
+        Browser().quitBrowser()
         sys.exit(0)
 
     def resetEdge(self):
@@ -283,7 +283,7 @@ class GUI:
                 self.bt_edge['state']=DISABLED
 
                 self.status.set(STATUS_SYNCING)
-                sync_result = Edge().syncBrowser()
+                sync_result = Browser().syncBrowser()
 
                 if sync_result in (SYNC_ERROR, CONNECTION_ERROR):
                     self.issueHandler(sync_result)
@@ -342,7 +342,7 @@ class GUI:
                 self.running = True
                 result = STATUS_DONE
 
-                Edge().resetScreen(self.speed)
+                Browser().resetScreen(self.speed)
 
                 # Set variables used to estimate time
                 first_loop = True
@@ -369,7 +369,7 @@ class GUI:
 
                         start_time = time()
 
-                        last_search = Edge().sendContact(last_search, ctt, mode, message, path, self.speed)
+                        last_search = Browser().sendContact(last_search, ctt, mode, message, path, self.speed)
                         wb.save(SHEET_PATH)
 
                         if last_search in (DEFAULT_ERROR, CONNECTION_ERROR):
@@ -379,7 +379,7 @@ class GUI:
                         
                     else:
                         result = STATUS_STOP
-                        Edge().resetScreen(self.speed)
+                        Browser().resetScreen(self.speed)
                         break
 
                     first_loop = False
