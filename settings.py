@@ -3,10 +3,7 @@
     # New chat and search bar
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
 
-SEARCH_BAR_CLEAN_BUTTON = [
-    'span[data-icon="close-refreshed"]',
-    'span[data-icon="x-alt"]'
-    ]
+SEARCH_BAR_CLEAN_BUTTON = '#app div._aigw button[aria-label="Cancel search"]'
 
     # Contacts list
 CHAT_LIST = '#app div._aigw div[role="button"] div._ak8n' # Verifies if contact was found
@@ -29,7 +26,9 @@ ATTACH_PLUS_BUTTON = [
     'span[data-icon="plus"]'
     ]
 
-IMG_VID_BUTTON = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
+IMG_VID_CATEGORY_BUTTON = '#app ul div.x13fj5qh.x1xegmmw:nth-of-type(2) li'
+
+IMG_VID_INPUT = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
     
     # Text input after attaching a file
 FILE_SEND_BUTTON = [
