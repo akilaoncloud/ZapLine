@@ -111,7 +111,10 @@ class Browser:
                 EC.element_to_be_clickable((By.CSS_SELECTOR, ATTACH_PLUS_BUTTON[1]))
             )
         ).click()
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, IMG_VID_BUTTON))).send_keys(path)
+
+        wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, IMG_VID_CATEGORY_BUTTON))).click()
+
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, IMG_VID_INPUT))).send_keys(path)
 
     def sendIt(self, element):
         wait.until(
@@ -160,12 +163,7 @@ class Browser:
                     logging.info(search)
 
                     if contact_number in search: # No results found for 'contact_number'
-                        wait.until(
-                            EC.any_of(
-                                EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR_CLEAN_BUTTON[0])),
-                                EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR_CLEAN_BUTTON[1]))
-                            )
-                        ).click()
+                        wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR_CLEAN_BUTTON))).click()
                         contact[3].value = '✘'
                         search = 'Not Found'
                         break
