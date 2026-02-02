@@ -4,6 +4,7 @@
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
 
 SEARCH_BAR_CLEAN_BUTTON = '#app div._aigw button[aria-label="Cancel search"]'
+SEARCH_BAR = '#app div._aigw div[role="textbox"]:not(div[id="side"] *)' # :not (select a div that is not inside of div[id="side"]) "*" means any element inside
 
     # Contacts list
 CHAT_LIST = '#app div._aigw div[role="button"] div._ak8n' # Verifies if contact was found
@@ -27,11 +28,16 @@ ATTACH_PLUS_BUTTON = [
     ]
 
 IMG_VID_CATEGORY_BUTTON = '#app ul div.x13fj5qh.x1xegmmw:nth-of-type(2) li'
-
 IMG_VID_INPUT = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
+
+AUDIO_CATEGORY_BUTTON = '#app ul div.x13fj5qh.x1xegmmw:nth-of-type(4) li'
+AUDIO_INPUT = 'input[accept="audio/wav,audio/mp3,audio/ogg,audio/aac,audio/mpeg"]'
+
+FILE_CATEGORY_BUTTON = '#app ul div.x13fj5qh.x1xegmmw:nth-of-type(1) li'
+FILE_INPUT = 'input[accept="*"]'
     
     # Text input after attaching a file
-FILE_SEND_BUTTON = [
+ATTACHMENT_SEND_BUTTON = [
     'span[data-icon="wds-ic-send-filled"]:not(#main footer *)',
     '#app div.x1n2onr6.x5yr21d.x6ikm8r.x10wlt62.x17dzmu4.xyyilfv.x1iyjqo2.xa1v5g2 span[data-icon="wds-ic-send-filled"]'
     ]
@@ -45,22 +51,30 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.0.15'
-SHEET_WINDOW_TITLE = 'Editar Planilha'
+GUI_TITLE = 'Zapline - v1.1.0'
 GUI_THEME = 'solar'
 
     # Path
 SHEET_PATH = 'sheet.xlsx'
 ICON_PATH = 'zapline.ico'
 
+    # Media Types
+IMAGE_TYPES = '*.xbm *.tif *.jfif *.jfif *.pjp *.apng *.jpe *.jpeg *.heif *.ico *.tiff *.webp *.svgz *.jpg *.heic *.gif *.svg *.png *.bmp *.pjpeg *.avif'
+VIDEO_TYPES = '*.3gp *.avi *.flv *.mkv *.mov *.mp4 *.m4v'
+AUDIO_TYPES = '*.m4a *.aac *.wav *.mp3 *.opus *.oga *.ogg'
+
 
 # DEFAULT APP TEXT LANGUAGE
 
 LABEL_MESSAGE_BOX = 'Digite a mensagem:'
+LABEL_ATTACHMENT_BOX = 'Adicione um anexo:'
 BUTTON_OPEN_SHEET = 'Editar arquivo no Excel'
 
-NO_IMAGE = 'SEM IMAGEM'
-INSERT_IMAGE = 'Inserir Imagem'
+NO_ATTACHMENT = 'SEM ANEXO'
+INSERT_IMAGE = 'Imagem'
+INSERT_VIDEO = 'Vídeo'
+INSERT_AUDIO = 'Áudio'
+INSERT_FILE = 'Arquivo'
 
 LABEL_TAB_DROPDOWN = 'Escolha a aba do Excel desejada:'
 DEFAULT_TAB_OPTION = 'Selecione uma aba'
@@ -69,8 +83,8 @@ LABEL_LINE_ENTRY = 'Digite a linha de início (opcional):'
 
 SEND_CHOOSE_MODE = 'Escolha uma opção de envio:'
 SEND_MESSAGE_MODE = 'Apenas Mensagem'
-SEND_IMAGE_MODE = 'Apenas Imagem'
-SEND_IMG_MSG_MODE = 'Mensagem + Imagem'
+SEND_ATTACHMENT_MODE = 'Apenas Anexo'
+SEND_MSG_ATTCH_MODE = 'Mensagem + Anexo'
 
 RESET_EDGE_TITLE = 'Encerrar Microsoft Edge'
 RESET_EDGE_TEXT_QUESTION = 'Deseja realmente fechar o Edge? Todas as abas serão fechadas.'

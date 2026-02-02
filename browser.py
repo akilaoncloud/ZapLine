@@ -104,7 +104,7 @@ class Browser:
         
         sleep(speed)
 
-    def attachPhoto(self, path):
+    def insertAttachment(self, path, type):
         wait.until(
             EC.any_of(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, ATTACH_PLUS_BUTTON[0])),
@@ -112,9 +112,16 @@ class Browser:
             )
         ).click()
 
-        wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, IMG_VID_CATEGORY_BUTTON))).click()
-
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, IMG_VID_INPUT))).send_keys(path)
+        match type:
+            case 1:
+                wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, IMG_VID_CATEGORY_BUTTON))).click()
+                wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, IMG_VID_INPUT))).send_keys(path)
+            case 2:
+                wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, AUDIO_CATEGORY_BUTTON))).click()
+                wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, AUDIO_INPUT))).send_keys(path)
+            case 3:
+                wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, FILE_CATEGORY_BUTTON))).click()
+                wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, FILE_INPUT))).send_keys(path)
 
     def sendIt(self, element):
         wait.until(
@@ -124,7 +131,7 @@ class Browser:
             )
         ).click()
 
-    def sendContact(self, last_search, contact, mode, message, path, speed): 
+    def sendContact(self, last_search, contact, mode, message, path, type, speed): 
         # It can retry on finding a contact
         contact_search_retries = 1 
 
@@ -137,6 +144,7 @@ class Browser:
                 wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, NEW_CHAT))).click()
 
             # Inserts contact number in the search bar
+            wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR))).click()
             search_bar = driver.switch_to.active_element
             search_bar.send_keys(str(contact_number))
 
@@ -198,20 +206,20 @@ class Browser:
                                 self.writeMessage(message, speed)
                                 self.sendIt(MAIN_SEND_BUTTON)
 
-                            case 1: # Only image
-                                self.attachPhoto(path)
-                                self.sendIt(FILE_SEND_BUTTON)
+                            case 1: # Only attachment
+                                self.insertAttachment(path, type)
+                                self.sendIt(ATTACHMENT_SEND_BUTTON)
 
-                            case 2: # Message and Image
+                            case 2: # Message and attachment
                                 self.writeMessage(message, speed)
-                                self.attachPhoto(path)
-                                self.sendIt(FILE_SEND_BUTTON)
+                                self.insertAttachment(path, type)
+                                self.sendIt(ATTACHMENT_SEND_BUTTON)
 
                         wait.until( # Check if both the send buttons are gone
                             EC.all_of(
                                 EC.any_of(
-                                    EC.invisibility_of_element((By.CSS_SELECTOR, FILE_SEND_BUTTON[0])),
-                                    EC.invisibility_of_element((By.CSS_SELECTOR, FILE_SEND_BUTTON[1]))
+                                    EC.invisibility_of_element((By.CSS_SELECTOR, ATTACHMENT_SEND_BUTTON[0])),
+                                    EC.invisibility_of_element((By.CSS_SELECTOR, ATTACHMENT_SEND_BUTTON[1]))
                                 ),
                                 EC.any_of(
                                     EC.invisibility_of_element((By.CSS_SELECTOR, MAIN_SEND_BUTTON[0])),

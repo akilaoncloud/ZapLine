@@ -94,45 +94,136 @@ class GUI:
         elif int(n_lin) > max_row:
             self.str_lin.set(max_row)
 
-    def checkImage(self):
+    def checkAttachment(self):
         if self.path:
-            self.rd_img['state'] = NORMAL
-            self.rd_msg_img['state'] = NORMAL
+            self.rd_attch['state'] = NORMAL
+            self.rd_msg_attch['state'] = NORMAL if self.type != 2 else DISABLED
+
+            if self.type == 2 and self.mode.get() == "2":
+                self.mode.set("1")
+
         else:
-            self.rd_img['state'] = DISABLED
-            self.rd_msg_img['state'] = DISABLED
+            self.rd_attch['state'] = DISABLED
+            self.rd_msg_attch['state'] = DISABLED
 
     def insertImage(self):
         try:
-            self.path = filedialog.askopenfile().name
+            self.path = filedialog.askopenfile(filetypes=[(INSERT_IMAGE, IMAGE_TYPES)]).name
 
             file = Image.open(self.path)
 
             image_ratio = file.size[0] / file.size[1]
-            canvas_ratio = self.canvas.winfo_width() / self.canvas.winfo_height()
-            
-            if canvas_ratio > image_ratio: # Image is wider than the canvas
-                image_h = int(self.canvas.winfo_height())
+            canvas_ratio = self.canvas_w / self.canvas_h
+
+            if canvas_ratio > image_ratio:  # Image is wider than the canvas
+                image_h = int(self.canvas_h)
                 image_w = int(image_h * image_ratio)
-            else: # Image is taller than canvas
-                image_w = int(self.canvas.winfo_width())
+            else:  # Image is taller than canvas
+                image_w = int(self.canvas_w)
                 image_h = int(image_w / image_ratio)
 
             resized_image = file.resize((image_w, image_h))
 
             self.canvas_image = ImageTk.PhotoImage(resized_image)
 
-            self.lbl_img.destroy() # Deletes the text, and adds an image
-            self.canvas.create_image(self.canvas.winfo_width() / 2, self.canvas.winfo_height() / 2, image = self.canvas_image)
+            self.canvas.delete("all")  # Deletes the text, and adds an image
+            self.canvas.create_image(self.canvas_w / 2, self.canvas_h / 2, image=self.canvas_image)
 
-            self.checkImage()
+            self.type = 1  # image/video format
+            self.checkAttachment()
 
         except AttributeError:
             return None
-        
+
         except UnidentifiedImageError:
             self.issueHandler(FILE_IMAGE_ERROR)
-            return None    
+
+    def insertVideo(self):
+        try:
+            self.path = filedialog.askopenfile(filetypes=[(INSERT_VIDEO, VIDEO_TYPES)]).name
+
+            self.canvas.delete("all")
+
+            # Ícone único
+            self.canvas.create_text(
+                self.canvas_w / 2, self.canvas_h / 2 - 20,
+                text="▶️",
+                font=("Segoe UI Emoji", 48)
+            )
+
+            # Path do arquivo
+            self.canvas.create_text(
+                self.canvas_w / 2, self.canvas_h / 2 + 50,
+                anchor='n',
+                text=self.path,
+                width=self.canvas_w - 25,
+                font=("Segoe UI", 9),
+                fill="#888"
+            )
+
+            self.type = 1  # image/video format
+            self.checkAttachment()
+
+        except AttributeError:
+            return None
+
+    def insertAudio(self):
+        try:
+            self.path = filedialog.askopenfile(filetypes=[(INSERT_AUDIO, AUDIO_TYPES)]).name
+
+            self.canvas.delete("all")
+
+            # Ícone único
+            self.canvas.create_text(
+                self.canvas_w / 2, self.canvas_h / 2 - 20,
+                text="🎵",
+                font=("Segoe UI Emoji", 48)
+            )
+
+            # Path do arquivo
+            self.canvas.create_text(
+                self.canvas_w / 2, self.canvas_h / 2 + 50,
+                anchor='n',
+                text=self.path,
+                width=self.canvas_w - 25,
+                font=("Segoe UI", 9),
+                fill="#888"
+            )
+
+            self.type = 2  # audio format
+            self.checkAttachment()
+
+        except AttributeError:
+            return None
+
+    def insertFile(self):
+        try:
+            self.path = filedialog.askopenfile().name
+
+            self.canvas.delete("all")
+
+            # Ícone único
+            self.canvas.create_text(
+                self.canvas_w / 2, self.canvas_h / 2 - 20,
+                text="📄",
+                font=("Segoe UI Emoji", 48)
+            )
+
+            # Path do arquivo
+            self.canvas.create_text(
+                self.canvas_w / 2, self.canvas_h / 2 + 50,
+                anchor='n',
+                text=self.path,
+                width=self.canvas_w - 25,
+                font=("Segoe UI", 9),
+                fill="#888"
+            )
+
+            self.type = 3  # file format
+            self.checkAttachment()
+
+        except AttributeError:
+            return None
 
     def scaler(self, *args):
         self.speed = float('%.1f' % self.scale.get())
@@ -148,56 +239,80 @@ class GUI:
         window.title(GUI_TITLE)
 
         # Adjusts the layout
-        window.columnconfigure((0,1,2), weight=1)
-        window.rowconfigure((0,1,2), weight=1)
+        window.columnconfigure((0, 1, 2), weight=1)
+        window.rowconfigure((0, 1, 2), weight=1)
 
         # Status Variable Created
         self.status = StringVar(value = STATUS_DEFAULT)
 
         # Textbox - Message
         lbl_box = tb.Label(window, text = LABEL_MESSAGE_BOX) # adds a text or subtitle
-        lbl_box.grid(row=0,column=0, pady=10)
+        lbl_box.grid(row=0, column=0, pady=10)
         self.msg = Text(window, width=50)
-        self.msg.grid(row=1,column=0, sticky=NSEW, padx=15)
+        self.msg.grid(row=1, column=0, sticky=NSEW, padx=15)
         # Button - Sheet file
         self.settings = tb.Frame(window)
 
-        self.bt_sheet = tb.Button(self.settings, text = BUTTON_OPEN_SHEET, command = self.openSheet)
+        self.bt_sheet = tb.Button(self.settings, text=BUTTON_OPEN_SHEET, command=self.openSheet)
         self.bt_sheet.pack(side=LEFT, padx=5)
 
-        self.bt_edge = tb.Button(self.settings, text = '⚙️', command = self.resetEdge)
+        self.bt_edge = tb.Button(self.settings, text='❌', command=self.resetEdge)
         self.bt_edge.pack(side=LEFT, padx=5)
 
-        self.settings.grid(row=2,column=0, pady=10)
+        self.settings.grid(row=2, column=0, pady=10)
 
         ToolTip(self.bt_edge, text=RESET_EDGE_TOOLTIP, bootstyle=(WARNING, INVERSE))
 
         # Canvas - Image preview
+        attachment_label = tb.Label(window, text=LABEL_ATTACHMENT_BOX) # adds a text or subtitle
+        attachment_label.grid(row=0, column=1, pady=10)
+
         self.canvas = tb.Canvas(window, background='#073642', highlightbackground='#0B5162', highlightthickness=1, autostyle=FALSE)
-        self.canvas.grid(row=1,column=1, sticky=NSEW)
+        self.canvas.grid(row=1, column=1, sticky=NSEW)
+
+        self.canvas.update_idletasks()
+
+        self.canvas_w = self.canvas.winfo_width()
+        self.canvas_h = self.canvas.winfo_height()
+
         # Label - Image preview
-        self.lbl_img = tb.Label(window, text = NO_IMAGE, background='#073642')
-        self.lbl_img.grid(row=1,column=1)
+        self.canvas.create_text(self.canvas_w / 2, self.canvas_h / 2, text=NO_ATTACHMENT, fill="white")
+
         # Button - Add an image
-        self.insert_img = tb.Button(window, text = INSERT_IMAGE, command = self.insertImage)
-        self.insert_img.grid(row=2,column=1)
+        self.attachment = tb.Frame(window)
+
+        self.insert_img = tb.Button(self.attachment, text=INSERT_IMAGE, command=self.insertImage)
+        self.insert_img.pack(side=LEFT, padx=5)
+
+        self.insert_vid = tb.Button(self.attachment, text=INSERT_VIDEO, command=self.insertVideo)
+        self.insert_vid.pack(side=LEFT, padx=5)
+
+        self.insert_aud = tb.Button(self.attachment, text=INSERT_AUDIO, command=self.insertAudio)
+        self.insert_aud.pack(side=LEFT, padx=5)
+
+        self.insert_file = tb.Button(self.attachment, text=INSERT_FILE, command=self.insertFile)
+        self.insert_file.pack(side=LEFT, padx=5)
+
+        self.attachment.grid(row=2, column=1, pady=10)
+
         self.path = ''
-        
+        self.type = 1  # standard type is image/video format
+
         # Frame - Message configurations
         self.adjust_msg = tb.Frame(window)
 
         self.syncWorkbook(True)
-    
+
         self.str_tab = StringVar()
-        lbl_tab = tb.Label(self.adjust_msg, text = LABEL_TAB_DROPDOWN)
+        lbl_tab = tb.Label(self.adjust_msg, text=LABEL_TAB_DROPDOWN)
         lbl_tab.pack(pady=8)
         self.nm_tab = tb.OptionMenu(self.adjust_msg, self.str_tab, DEFAULT_TAB_OPTION, *wb.sheetnames)
         self.nm_tab.pack(pady=8, fill='x')
 
         self.str_lin = StringVar()
-        lbl_lin = tb.Label(self.adjust_msg, text = LABEL_LINE_ENTRY)
+        lbl_lin = tb.Label(self.adjust_msg, text=LABEL_LINE_ENTRY)
         lbl_lin.pack(pady=8)
-        self.n_lin = tb.Entry(self.adjust_msg, textvariable=self.str_lin, state=DISABLED) # In-line textbox
+        self.n_lin = tb.Entry(self.adjust_msg, textvariable=self.str_lin, state=DISABLED)  # In-line textbox
         self.n_lin.pack(pady=8, fill='x')
 
         ToolTip(self.n_lin, text=N_LIN_TOOLTIP, bootstyle=(WARNING, INVERSE))
@@ -205,36 +320,38 @@ class GUI:
         # Choose a mode
         self.mode = StringVar(value=0)
 
-        lbl_mode = tb.Label(self.adjust_msg, text = SEND_CHOOSE_MODE)
+        lbl_mode = tb.Label(self.adjust_msg, text=SEND_CHOOSE_MODE)
         lbl_mode.pack(pady=8)
 
         radio_modes = tb.Frame(self.adjust_msg)
 
-        self.rd_msg = tb.Radiobutton(radio_modes, text = SEND_MESSAGE_MODE, value = 0, variable = self.mode) # Msg button (0)
+        self.rd_msg = tb.Radiobutton(
+            # Msg button (0)
+            radio_modes, text=SEND_MESSAGE_MODE, value=0, variable=self.mode)
         self.rd_msg.pack(pady=8, anchor=W)
 
-        self.rd_img = tb.Radiobutton(radio_modes, text = SEND_IMAGE_MODE, value = 1, variable = self.mode, state=DISABLED) # Img button (1)
-        self.rd_img.pack(pady=8, anchor=W)
+        self.rd_attch = tb.Radiobutton(radio_modes, text=SEND_ATTACHMENT_MODE, value=1, variable=self.mode, state=DISABLED) # Img button (1)
+        self.rd_attch.pack(pady=8, anchor=W)
 
-        self.rd_msg_img = tb.Radiobutton(radio_modes, text = SEND_IMG_MSG_MODE, value = 2, variable = self.mode, state=DISABLED) # Msg + img button (2)
-        self.rd_msg_img.pack(pady=8, anchor=W)
+        self.rd_msg_attch = tb.Radiobutton(radio_modes, text=SEND_MSG_ATTCH_MODE, value=2, variable=self.mode, state=DISABLED) # Msg + img button (2)
+        self.rd_msg_attch.pack(pady=8, anchor=W)
 
         radio_modes.pack()
 
         # Status placed
-        self.whats = tb.Label(self.adjust_msg, textvariable = self.status)
+        self.whats = tb.Label(self.adjust_msg, textvariable=self.status)
         self.whats.pack(pady=8)
 
         # Start and stop
-        self.sync = tb.Button(self.adjust_msg, text = BUTTON_SYNC, command = self.threadSync, state=NORMAL)
+        self.sync = tb.Button(self.adjust_msg, text=BUTTON_SYNC, command=self.threadSync, state=NORMAL)
         self.sync.pack(pady=8)
 
         strt_stop = tb.Frame(self.adjust_msg)
 
-        self.send = tb.Button(strt_stop, text = BUTTON_SEND, command = self.threadSend, state=DISABLED)
+        self.send = tb.Button(strt_stop, text=BUTTON_SEND, command=self.threadSend, state=DISABLED)
         self.send.pack(pady=8, side=LEFT)
 
-        self.stop = tb.Button(strt_stop, text = BUTTON_STOP, command = self.threadStop, state=DISABLED)
+        self.stop = tb.Button(strt_stop, text=BUTTON_STOP, command=self.threadStop, state=DISABLED)
         self.stop.pack(pady=8, side=LEFT)
 
         strt_stop.pack()
@@ -245,15 +362,15 @@ class GUI:
         self.n_speed = StringVar()
         self.scale = tb.Scale(self.scale_frame, from_=5, to=0.5, length=200, value=1, command=self.scaler)
         self.scale.pack(pady=8)
-        lbl_speed = tb.Label(self.scale_frame, textvariable = self.n_speed)
-        lbl_speed.pack(pady=[0,8])
+        lbl_speed = tb.Label(self.scale_frame, textvariable=self.n_speed)
+        lbl_speed.pack(pady=[0, 8])
 
         self.scale_frame.pack()
         ToolTip(self.scale, text=SCALE_TOOLTIP, bootstyle=(WARNING, INVERSE))
-        
+
         self.scaler()
 
-        self.adjust_msg.grid(row=0,rowspan=3,column=2, padx=25)
+        self.adjust_msg.grid(row=0, rowspan=3, column=2, padx=25)
 
         self.nm_tab.bind('<Button-1>', self.updateTabs)
         self.str_tab.trace_add('write', self.checkTabs)
@@ -271,16 +388,16 @@ class GUI:
 
     def threadStop(self):
         self.status.set(STATUS_STOPPING)
-        self.stop['state']=DISABLED
+        self.stop['state'] = DISABLED
         self.running = False
-    
+
     def threadSync(self):
 
         def sync():
             try:
-                self.sync['state']=DISABLED
-                self.send['state']=DISABLED
-                self.bt_edge['state']=DISABLED
+                self.sync['state'] = DISABLED
+                self.send['state'] = DISABLED
+                self.bt_edge['state'] = DISABLED
 
                 self.status.set(STATUS_SYNCING)
                 sync_result = Browser().syncBrowser()
@@ -290,13 +407,13 @@ class GUI:
                     self.status.set(STATUS_ERROR)
                 else:
                     self.status.set(sync_result)
-                    self.send['state']=NORMAL
+                    self.send['state'] = NORMAL
 
-                self.sync['state']=NORMAL
-                self.bt_edge['state']=NORMAL
+                self.sync['state'] = NORMAL
+                self.bt_edge['state'] = NORMAL
             except:
                 logging.error(format_exc())
-        
+
         threading.Thread(target=sync).start()
 
     def threadSend(self):
@@ -307,7 +424,7 @@ class GUI:
 
                 if not self.syncWorkbook(False):
                     return None
-                
+
                 try:
                     tab = wb[tab_name]
                 except KeyError:
@@ -316,27 +433,32 @@ class GUI:
 
                 self.status.set(STATUS_SENDING)
 
-                self.msg['state']=DISABLED
-                self.bt_sheet['state']=DISABLED
-                self.bt_edge['state']=DISABLED
-                self.insert_img['state']=DISABLED
+                self.msg['state'] = DISABLED
+                self.bt_sheet['state'] = DISABLED
+                self.bt_edge['state'] = DISABLED
+                self.insert_img['state'] = DISABLED
+                self.insert_vid['state'] = DISABLED
+                self.insert_aud['state'] = DISABLED
+                self.insert_file['state'] = DISABLED
 
-                self.nm_tab['state']=DISABLED
-                self.n_lin['state']=DISABLED
-                self.rd_msg['state']=DISABLED
-                self.rd_img['state']=DISABLED
-                self.rd_msg_img['state']=DISABLED
+                self.nm_tab['state'] = DISABLED
+                self.n_lin['state'] = DISABLED
+                self.rd_msg['state'] = DISABLED
+                self.rd_attch['state'] = DISABLED
+                self.rd_msg_attch['state'] = DISABLED
 
-                self.sync['state']=DISABLED
-                self.stop['state']=NORMAL
-                self.send['state']=DISABLED
-                
-                lin_start = 2 if self.str_lin.get()=='' else int(self.str_lin.get())+1
+                self.sync['state'] = DISABLED
+                self.stop['state'] = NORMAL
+                self.send['state'] = DISABLED
+
+                lin_start = 2 if self.str_lin.get() == '' else int(self.str_lin.get())+1
                 mode = int(self.mode.get())
                 # 'line_one.character_zero', 'end_of_text - 1 character (\n)'
-                raw_message = str(self.msg.get('1.0','end-1c'))
-                message = raw_message.replace('\xa0', ' ').rstrip('\n') # Remove this characters from the end of the string
+                raw_message = str(self.msg.get('1.0', 'end-1c'))
+                # Remove this characters from the end of the string
+                message = raw_message.replace('\xa0', ' ').rstrip('\n')
                 path = self.path
+                type = self.type
                 last_search = ''
 
                 self.running = True
@@ -369,7 +491,7 @@ class GUI:
 
                         start_time = time()
 
-                        last_search = Browser().sendContact(last_search, ctt, mode, message, path, self.speed)
+                        last_search = Browser().sendContact(last_search, ctt, mode, message, path, type, self.speed)
                         wb.save(SHEET_PATH)
 
                         if last_search in (DEFAULT_ERROR, CONNECTION_ERROR):
@@ -391,19 +513,22 @@ class GUI:
                 self.syncWorkbook(True)
                 # The errors only occur when the sheet is not closed before sending the messages
 
-                self.msg['state']=NORMAL
-                self.bt_sheet['state']=NORMAL
-                self.bt_edge['state']=NORMAL
-                self.insert_img['state']=NORMAL
+                self.msg['state'] = NORMAL
+                self.bt_sheet['state'] = NORMAL
+                self.bt_edge['state'] = NORMAL
+                self.insert_img['state'] = NORMAL
+                self.insert_vid['state'] = NORMAL
+                self.insert_aud['state'] = NORMAL
+                self.insert_file['state'] = NORMAL
 
-                self.nm_tab['state']=NORMAL
-                self.n_lin['state']=NORMAL
-                self.rd_msg['state']=NORMAL
-                self.checkImage()
+                self.nm_tab['state'] = NORMAL
+                self.n_lin['state'] = NORMAL
+                self.rd_msg['state'] = NORMAL
+                self.checkAttachment()
 
-                self.stop['state']=DISABLED
-                self.sync['state']=NORMAL
-                self.send['state']=NORMAL
+                self.stop['state'] = DISABLED
+                self.sync['state'] = NORMAL
+                self.send['state'] = NORMAL
             except:
                 logging.error(format_exc())
 
