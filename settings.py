@@ -3,7 +3,7 @@
     # New chat and search bar
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
 
-SEARCH_BAR_CLEAN_BUTTON = '#app div._aigw button[aria-label="Cancel search"]'
+SEARCH_BAR_CLEAN_BUTTON = '#app div._aigw span > button > span[aria-hidden="true"]'
 SEARCH_BAR = '#app div._aigw div[role="textbox"]:not(div[id="side"] *)' # :not (select a div that is not inside of div[id="side"]) "*" means any element inside
 
     # Contacts list
@@ -27,13 +27,13 @@ ATTACH_PLUS_BUTTON = [
     'span[data-icon="plus"]'
     ]
 
-IMG_VID_CATEGORY_BUTTON = '#app ul div.x13fj5qh.x1xegmmw:nth-of-type(2) li'
+IMG_VID_CATEGORY_BUTTON = '#app div[role="menu"] div[role="menuitem"]:nth-of-type(2)'
 IMG_VID_INPUT = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
 
-AUDIO_CATEGORY_BUTTON = '#app ul div.x13fj5qh.x1xegmmw:nth-of-type(4) li'
+AUDIO_CATEGORY_BUTTON = '#app div[role="menu"] div[role="menuitem"]:nth-of-type(4)'
 AUDIO_INPUT = 'input[accept="audio/wav,audio/mp3,audio/ogg,audio/aac,audio/mpeg"]'
 
-FILE_CATEGORY_BUTTON = '#app ul div.x13fj5qh.x1xegmmw:nth-of-type(1) li'
+FILE_CATEGORY_BUTTON = '#app div[role="menu"] div[role="menuitem"]:nth-of-type(1)'
 FILE_INPUT = 'input[accept="*"]'
     
     # Text input after attaching a file
@@ -51,7 +51,7 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.1.0'
+GUI_TITLE = 'Zapline - v1.1.1'
 GUI_THEME = 'solar'
 
     # Path
