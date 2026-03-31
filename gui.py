@@ -1,10 +1,8 @@
-from tkinter import mainloop, StringVar, Text, filedialog, messagebox
+from tkinter import mainloop, StringVar, Text, messagebox
 
-import ttkbootstrap as tb   # pip install ttkbootsrap
-from ttkbootstrap.tooltip import ToolTip
+import ttkbootstrap as tb   # pip install ttkbootstrap
+from ttkbootstrap.widgets import ToolTip
 from ttkbootstrap.constants import *
-
-from PIL import Image, ImageTk, UnidentifiedImageError  # pip install pillow
 
 from os import startfile, chdir
 from time import time
@@ -16,6 +14,7 @@ import subprocess
 import sys
 
 from settings import *
+from previewer import *
 from browser import Browser
 
 import openpyxl # pip install openpyxl
@@ -106,125 +105,6 @@ class GUI:
             self.rd_attch['state'] = DISABLED
             self.rd_msg_attch['state'] = DISABLED
 
-    def insertImage(self):
-        try:
-            self.path = filedialog.askopenfile(filetypes=[(INSERT_IMAGE, IMAGE_TYPES)]).name
-
-            file = Image.open(self.path)
-
-            image_ratio = file.size[0] / file.size[1]
-            canvas_ratio = self.canvas_w / self.canvas_h
-
-            if canvas_ratio > image_ratio:  # Image is wider than the canvas
-                image_h = int(self.canvas_h)
-                image_w = int(image_h * image_ratio)
-            else:  # Image is taller than canvas
-                image_w = int(self.canvas_w)
-                image_h = int(image_w / image_ratio)
-
-            resized_image = file.resize((image_w, image_h))
-
-            self.canvas_image = ImageTk.PhotoImage(resized_image)
-
-            self.canvas.delete("all")  # Deletes the text, and adds an image
-            self.canvas.create_image(self.canvas_w / 2, self.canvas_h / 2, image=self.canvas_image)
-
-            self.type = 1  # image/video format
-            self.checkAttachment()
-
-        except AttributeError:
-            return None
-
-        except UnidentifiedImageError:
-            self.issueHandler(FILE_IMAGE_ERROR)
-
-    def insertVideo(self):
-        try:
-            self.path = filedialog.askopenfile(filetypes=[(INSERT_VIDEO, VIDEO_TYPES)]).name
-
-            self.canvas.delete("all")
-
-            # Ícone único
-            self.canvas.create_text(
-                self.canvas_w / 2, self.canvas_h / 2 - 20,
-                text="▶️",
-                font=("Segoe UI Emoji", 48)
-            )
-
-            # Path do arquivo
-            self.canvas.create_text(
-                self.canvas_w / 2, self.canvas_h / 2 + 50,
-                anchor='n',
-                text=self.path,
-                width=self.canvas_w - 25,
-                font=("Segoe UI", 9),
-                fill="#888"
-            )
-
-            self.type = 1  # image/video format
-            self.checkAttachment()
-
-        except AttributeError:
-            return None
-
-    def insertAudio(self):
-        try:
-            self.path = filedialog.askopenfile(filetypes=[(INSERT_AUDIO, AUDIO_TYPES)]).name
-
-            self.canvas.delete("all")
-
-            # Ícone único
-            self.canvas.create_text(
-                self.canvas_w / 2, self.canvas_h / 2 - 20,
-                text="🎵",
-                font=("Segoe UI Emoji", 48)
-            )
-
-            # Path do arquivo
-            self.canvas.create_text(
-                self.canvas_w / 2, self.canvas_h / 2 + 50,
-                anchor='n',
-                text=self.path,
-                width=self.canvas_w - 25,
-                font=("Segoe UI", 9),
-                fill="#888"
-            )
-
-            self.type = 2  # audio format
-            self.checkAttachment()
-
-        except AttributeError:
-            return None
-
-    def insertFile(self):
-        try:
-            self.path = filedialog.askopenfile().name
-
-            self.canvas.delete("all")
-
-            # Ícone único
-            self.canvas.create_text(
-                self.canvas_w / 2, self.canvas_h / 2 - 20,
-                text="📄",
-                font=("Segoe UI Emoji", 48)
-            )
-
-            # Path do arquivo
-            self.canvas.create_text(
-                self.canvas_w / 2, self.canvas_h / 2 + 50,
-                anchor='n',
-                text=self.path,
-                width=self.canvas_w - 25,
-                font=("Segoe UI", 9),
-                fill="#888"
-            )
-
-            self.type = 3  # file format
-            self.checkAttachment()
-
-        except AttributeError:
-            return None
-
     def scaler(self, *args):
         self.speed = float('%.1f' % self.scale.get())
         self.n_speed.set(f'{SPEED}: {self.speed}s')
@@ -281,16 +161,16 @@ class GUI:
         # Button - Add an image
         self.attachment = tb.Frame(window)
 
-        self.insert_img = tb.Button(self.attachment, text=INSERT_IMAGE, command=self.insertImage)
+        self.insert_img = tb.Button(self.attachment, text=INSERT_IMAGE, command=lambda: insertImage(self))
         self.insert_img.pack(side=LEFT, padx=5)
 
-        self.insert_vid = tb.Button(self.attachment, text=INSERT_VIDEO, command=self.insertVideo)
+        self.insert_vid = tb.Button(self.attachment, text=INSERT_VIDEO, command=lambda: insertVideo(self))
         self.insert_vid.pack(side=LEFT, padx=5)
 
-        self.insert_aud = tb.Button(self.attachment, text=INSERT_AUDIO, command=self.insertAudio)
+        self.insert_aud = tb.Button(self.attachment, text=INSERT_AUDIO, command=lambda: insertAudio(self))
         self.insert_aud.pack(side=LEFT, padx=5)
 
-        self.insert_file = tb.Button(self.attachment, text=INSERT_FILE, command=self.insertFile)
+        self.insert_file = tb.Button(self.attachment, text=INSERT_FILE, command=lambda: insertFile(self))
         self.insert_file.pack(side=LEFT, padx=5)
 
         self.attachment.grid(row=2, column=1, pady=10)
@@ -464,7 +344,8 @@ class GUI:
                 self.running = True
                 result = STATUS_DONE
 
-                Browser().resetScreen(self.speed)
+                Browser().browserSpeed(self.speed)
+                Browser().resetScreen()
 
                 # Set variables used to estimate time
                 first_loop = True
@@ -489,9 +370,11 @@ class GUI:
                     if self.running:
                         self.status.set(f'{STATUS_SENDING} ({contact}/{contacts})\n{STATUS_ESTIMATIVE_LABEL} {estimated_time}')
 
+                        Browser().browserSpeed(self.speed)
+
                         start_time = time()
 
-                        last_search = Browser().sendContact(last_search, ctt, mode, message, path, type, self.speed)
+                        last_search = Browser().sendContact(last_search, ctt, mode, message, path, type)
                         wb.save(SHEET_PATH)
 
                         if last_search in (DEFAULT_ERROR, CONNECTION_ERROR):
@@ -501,7 +384,7 @@ class GUI:
                         
                     else:
                         result = STATUS_STOP
-                        Browser().resetScreen(self.speed)
+                        Browser().resetScreen()
                         break
 
                     first_loop = False

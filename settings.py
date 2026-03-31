@@ -99,8 +99,8 @@ STATUS_STOPPING = 'Suspendendo...'
 
 STATUS_SYNCED = 'Sincronizado'
 STATUS_DONE = 'Finalizado'
-STATUS_STOP = 'Suspenso'
-STATUS_ERROR = 'Interrompido'
+STATUS_STOP = 'Suspenso na linha'
+STATUS_ERROR = 'Interrompido na linha'
 
 STATUS_ESTIMATIVE_CALC = 'Calculando...'
 STATUS_ESTIMATIVE_LABEL = 'Estimativa:'
