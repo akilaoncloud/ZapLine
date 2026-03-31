@@ -1,7 +1,7 @@
 from selenium import webdriver  # pip install selenium
 
 from selenium.common.exceptions import *
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError #pip install requests
 
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.edge.service import Service
@@ -16,8 +16,13 @@ from traceback import format_exc
 import logging
 
 from settings import *
+from behavior import *
 
 class Browser:
+
+    def browserSpeed(self, scaler_speed):
+        global speed
+        speed = scaler_speed
 
     def quitBrowser(self):
         try: # Tries to quit in case the browser is still open
@@ -80,20 +85,21 @@ class Browser:
             
         return result
 
-    def resetScreen(self, speed):
-        sleep(speed/2)
+    def resetScreen(self):
+        humanWait(speed)
         for rpt in range(4): # Resets WhatsApp's screen to the default page
             webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        sleep(speed/2)
+            sleep(random.uniform(0.10,0.12))
+        humanWait(speed)
 
-    def writeMessage(self, message, speed):
+    def writeMessage(self, message):
         text_field = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, MAIN_TEXT_INPUT)))
 
         lenght_msg = len(message.split("\n"))
         count_lin = 1
 
         for line_of_text in message.split("\n"):
-            text_field.send_keys(line_of_text)
+            humanType(text_field, line_of_text, speed)
 
             if count_lin < lenght_msg:
                 text_field.send_keys(Keys.SHIFT + Keys.ENTER)
@@ -101,8 +107,6 @@ class Browser:
             count_lin += 1
 
         text_field.click()
-        
-        sleep(speed)
 
     def insertAttachment(self, path, type):
         wait.until(
@@ -112,15 +116,20 @@ class Browser:
             )
         ).click()
 
+        humanWait(speed)
+
         match type:
             case 1:
                 wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, IMG_VID_CATEGORY_BUTTON))).click()
+                humanWait(speed)
                 wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, IMG_VID_INPUT))).send_keys(path)
             case 2:
                 wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, AUDIO_CATEGORY_BUTTON))).click()
+                humanWait(speed)
                 wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, AUDIO_INPUT))).send_keys(path)
             case 3:
                 wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, FILE_CATEGORY_BUTTON))).click()
+                humanWait(speed)
                 wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, FILE_INPUT))).send_keys(path)
 
     def sendIt(self, element):
@@ -131,7 +140,7 @@ class Browser:
             )
         ).click()
 
-    def sendContact(self, last_search, contact, mode, message, path, type, speed): 
+    def sendContact(self, last_search, contact, mode, message, path, type): 
         # It can retry on finding a contact
         contact_search_retries = 1 
 
@@ -143,12 +152,12 @@ class Browser:
                 #If it was, it opens the search bar again.
                 wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, NEW_CHAT))).click()
 
+            humanWait(speed)
+
             # Inserts contact number in the search bar
             wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR))).click()
             search_bar = driver.switch_to.active_element
-            search_bar.send_keys(str(contact_number))
-
-            sleep(speed)
+            humanType(search_bar, str(contact_number), speed)
 
             # Looks for a valid contact number
             while True: 
@@ -165,7 +174,7 @@ class Browser:
 
                 except StaleElementReferenceException:
                     logging.warning('\n\nStaleElement - Retrying...\n\n')
-                    sleep(1)
+                    humanWait(speed)
 
                 else:
                     logging.info(search)
@@ -180,7 +189,7 @@ class Browser:
                         return CONNECTION_ERROR
                         
                     elif '...' in search: # Looking for... 
-                        sleep(1) # It's still looking if the contact exists or not
+                        humanWait(speed) # It's still looking if the contact exists or not
                         contact_search_retries+=1
 
                     # Found it
@@ -196,23 +205,27 @@ class Browser:
                             footer = int(wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'footer'))).get_attribute('childElementCount'))
                         
                         if footer == 1: # When a contact is blocked, all the child elements of the footer tag will be reduced to one 
-                            self.resetScreen(speed)
+                            self.resetScreen()
                             contact[3].value = '✘'
                             break # Doesn't send if the contact is currently blocked
 
                         match mode:
 
                             case 0: # Only message
-                                self.writeMessage(message, speed)
+                                self.writeMessage(message)
+                                humanWait(speed)
                                 self.sendIt(MAIN_SEND_BUTTON)
 
                             case 1: # Only attachment
                                 self.insertAttachment(path, type)
+                                humanWait(speed)
                                 self.sendIt(ATTACHMENT_SEND_BUTTON)
 
                             case 2: # Message and attachment
-                                self.writeMessage(message, speed)
+                                self.writeMessage(message)
+                                humanWait(speed)
                                 self.insertAttachment(path, type)
+                                humanWait(speed)
                                 self.sendIt(ATTACHMENT_SEND_BUTTON)
 
                         wait.until( # Check if both the send buttons are gone
@@ -229,7 +242,7 @@ class Browser:
                             )
                         )                
                         # [ESC] is pressed, returning to the default screen                    
-                        self.resetScreen(speed)
+                        self.resetScreen()
                         contact[3].value = '✔'
                         break
 
