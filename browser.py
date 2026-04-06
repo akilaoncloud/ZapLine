@@ -89,11 +89,16 @@ class Browser:
         humanWait(speed)
         for rpt in range(4): # Resets WhatsApp's screen to the default page
             webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-            sleep(random.uniform(0.10,0.12))
+            sleep(random.uniform(0.10,0.13))
         humanWait(speed)
 
     def writeMessage(self, message):
         text_field = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, MAIN_TEXT_INPUT)))
+
+        text_field.send_keys(Keys.CONTROL + "a")
+        sleep(random.uniform(0.25,0.35))
+        text_field.send_keys(Keys.DELETE)
+        sleep(random.uniform(0.25,0.35))
 
         lenght_msg = len(message.split("\n"))
         count_lin = 1
@@ -109,13 +114,14 @@ class Browser:
         text_field.click()
 
     def insertAttachment(self, path, type):
-        wait.until(
+        attach_btt = wait.until(
             EC.any_of(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, ATTACH_PLUS_BUTTON[0])),
                 EC.element_to_be_clickable((By.CSS_SELECTOR, ATTACH_PLUS_BUTTON[1]))
             )
-        ).click()
-
+        )
+        humanWait(speed)
+        attach_btt.click()
         humanWait(speed)
 
         match type:
@@ -133,12 +139,14 @@ class Browser:
                 wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, FILE_INPUT))).send_keys(path)
 
     def sendIt(self, element):
-        wait.until(
+        send_btt = wait.until(
             EC.any_of(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, element[0])),
                 EC.element_to_be_clickable((By.CSS_SELECTOR, element[1]))
             )
-        ).click()
+        )
+        humanWait(speed)
+        send_btt.click()
 
     def sendContact(self, last_search, contact, mode, message, path, type): 
         # It can retry on finding a contact
@@ -180,6 +188,7 @@ class Browser:
                     logging.info(search)
 
                     if contact_number in search: # No results found for 'contact_number'
+                        humanWait(speed)
                         wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR_CLEAN_BUTTON))).click()
                         contact[3].value = '✘'
                         search = 'Not Found'
@@ -194,7 +203,9 @@ class Browser:
 
                     # Found it
                     else:
+                        humanWait(speed)
                         search_bar.send_keys(Keys.ENTER)
+                        humanWait(speed)
 
                         try:
                             footer = int(wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'footer'))).get_attribute('childElementCount'))
@@ -213,19 +224,16 @@ class Browser:
 
                             case 0: # Only message
                                 self.writeMessage(message)
-                                humanWait(speed)
                                 self.sendIt(MAIN_SEND_BUTTON)
 
                             case 1: # Only attachment
                                 self.insertAttachment(path, type)
-                                humanWait(speed)
                                 self.sendIt(ATTACHMENT_SEND_BUTTON)
 
                             case 2: # Message and attachment
                                 self.writeMessage(message)
                                 humanWait(speed)
                                 self.insertAttachment(path, type)
-                                humanWait(speed)
                                 self.sendIt(ATTACHMENT_SEND_BUTTON)
 
                         wait.until( # Check if both the send buttons are gone
