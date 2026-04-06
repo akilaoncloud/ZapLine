@@ -1,12 +1,26 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from PyInstaller.utils.hooks import collect_all
+
+# Collect all Selenium modules, binaries, and data (handles dynamic imports)
+datas_selenium, binaries_selenium, hiddenimports_selenium = collect_all('selenium')
 
 a = Analysis(
     ['gui.py'],
     pathex=[],
-    binaries=[],
-    datas=[('zapline.ico', 'assets'), ('sheet.xlsx', 'assets')],
-    hiddenimports=[],
+
+    # Include Selenium binaries only (no manual msedgedriver)
+    binaries=binaries_selenium,
+
+    # Include project assets and Selenium internal data
+    datas=[
+        ('zapline.ico', 'assets'),
+        ('sheet.xlsx', 'assets'),
+    ] + datas_selenium,
+
+    # Required to prevent missing module errors from Selenium dynamic imports
+    hiddenimports=hiddenimports_selenium,
+
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -14,6 +28,7 @@ a = Analysis(
     noarchive=False,
     optimize=0,
 )
+
 pyz = PYZ(a.pure)
 
 exe = EXE(
@@ -30,10 +45,9 @@ exe = EXE(
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
     icon=['zapline.ico'],
 )
+
 coll = COLLECT(
     exe,
     a.binaries,

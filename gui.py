@@ -240,7 +240,7 @@ class GUI:
         self.scale_frame = tb.Frame(self.adjust_msg)
 
         self.n_speed = StringVar()
-        self.scale = tb.Scale(self.scale_frame, from_=5, to=0.5, length=200, value=1, command=self.scaler)
+        self.scale = tb.Scale(self.scale_frame, from_=2, to=0.5, length=200, value=1, command=self.scaler)
         self.scale.pack(pady=8)
         lbl_speed = tb.Label(self.scale_frame, textvariable=self.n_speed)
         lbl_speed.pack(pady=[0, 8])
@@ -379,11 +379,11 @@ class GUI:
 
                         if last_search in (DEFAULT_ERROR, CONNECTION_ERROR):
                             self.issueHandler(last_search)
-                            result = STATUS_ERROR
+                            result = f'{STATUS_ERROR} {contact}/{contacts}'
                             break
                         
                     else:
-                        result = STATUS_STOP
+                        result = f'{STATUS_STOP} {contact}/{contacts}'
                         Browser().resetScreen()
                         break
 

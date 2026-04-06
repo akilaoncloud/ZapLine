@@ -3,8 +3,8 @@
     # New chat and search bar
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
 
-SEARCH_BAR_CLEAN_BUTTON = '#app div._aigw span > button > span[aria-hidden="true"]'
-SEARCH_BAR = '#app div._aigw div[role="textbox"]:not(div[id="side"] *)' # :not (select a div that is not inside of div[id="side"]) "*" means any element inside
+SEARCH_BAR_CLEAN_BUTTON = '#app div._aigw span div[dir="ltr"] button span[aria-hidden="true"]'
+SEARCH_BAR = '#app div._aigw input[role="textbox"]:not(div[id="side"] *)' # :not (select a div that is not inside of div[id="side"]) "*" means any element inside
 
     # Contacts list
 CHAT_LIST = '#app div._aigw div[role="button"] div._ak8n' # Verifies if contact was found
@@ -27,13 +27,13 @@ ATTACH_PLUS_BUTTON = [
     'span[data-icon="plus"]'
     ]
 
-IMG_VID_CATEGORY_BUTTON = '#app div[role="menu"] div[role="menuitem"]:nth-of-type(2)'
+IMG_VID_CATEGORY_BUTTON = '#app div[role="menu"] button[role="menuitem"]:nth-of-type(2)'
 IMG_VID_INPUT = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
 
-AUDIO_CATEGORY_BUTTON = '#app div[role="menu"] div[role="menuitem"]:nth-of-type(4)'
+AUDIO_CATEGORY_BUTTON = '#app div[role="menu"] button[role="menuitem"]:nth-of-type(4)'
 AUDIO_INPUT = 'input[accept="audio/wav,audio/mp3,audio/ogg,audio/aac,audio/mpeg"]'
 
-FILE_CATEGORY_BUTTON = '#app div[role="menu"] div[role="menuitem"]:nth-of-type(1)'
+FILE_CATEGORY_BUTTON = '#app div[role="menu"] button[role="menuitem"]:nth-of-type(1)'
 FILE_INPUT = 'input[accept="*"]'
     
     # Text input after attaching a file
@@ -51,7 +51,7 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.1.1'
+GUI_TITLE = 'Zapline - v1.2.0'
 GUI_THEME = 'solar'
 
     # Path
@@ -91,16 +91,16 @@ RESET_EDGE_TEXT_QUESTION = 'Deseja realmente fechar o Edge? Todas as abas serão
 RESET_EDGE_TEXT_SUCCESS = 'Microsoft Edge foi fechado com sucesso!'
 
     # Status
-STATUS_DEFAULT = 'Sincronize seu telefone:'
+STATUS_DEFAULT = 'Sincronize seu telefone ⇄'
 
 STATUS_SYNCING = 'Sincronizando...'
 STATUS_SENDING = 'Enviando...'
 STATUS_STOPPING = 'Suspendendo...'
 
-STATUS_SYNCED = 'Sincronizado'
-STATUS_DONE = 'Finalizado'
-STATUS_STOP = 'Suspenso na linha'
-STATUS_ERROR = 'Interrompido na linha'
+STATUS_SYNCED = 'Sincronizado ⚡︎'
+STATUS_DONE = 'Finalizado ⚡︎'
+STATUS_STOP = 'Suspenso ⏸'
+STATUS_ERROR = 'Interrompido ⚠︎'
 
 STATUS_ESTIMATIVE_CALC = 'Calculando...'
 STATUS_ESTIMATIVE_LABEL = 'Estimativa:'
