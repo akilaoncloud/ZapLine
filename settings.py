@@ -3,18 +3,19 @@
     # New chat and search bar
 NEW_CHAT = 'span[data-icon="new-chat-outline"]'
 
-SEARCH_BAR_CLEAN_BUTTON = '#app div._aigw span div[dir="ltr"] button span[aria-hidden="true"]'
-SEARCH_BAR = '#app div._aigw input[role="textbox"]:not(div[id="side"] *)' # :not (select a div that is not inside of div[id="side"]) "*" means any element inside
+SEARCH_BAR_CLEAN_BUTTON = '#app div[data-testid="new-chat-drawer"] div[dir="ltr"] button span[aria-hidden="true"]'
+SEARCH_BAR = '#app div[data-testid="new-chat-drawer"] input[role="textbox"]:not(div[id="side"] *)' # :not (select a div that is not inside of div[id="side"]) "*" means any element inside
 
     # Contacts list
-CHAT_LIST = '#app div._aigw div[role="button"] div._ak8n' # Verifies if contact was found
+CHAT_LIST = '#app div[data-testid="new-chat-drawer"] div[role="button"]' # Verifies if contact was found
     
     # Looking outside | No results found
-RESULTS_SUBTITLE = '#app div._aigw span:has([class="_ao3e"]) span._ao3e' # :has (select parent that has a tag with _ao3e class inside)
-OFFLINE_SUBTITLE = '#app div._aigw div.x1c436fg'
+SEARCH_FAIL = '#app div[data-testid="new-chat-drawer"] div[data-testid="search-no-results-without-keyword-container"]'
+SEARCH_LOADING = '#app div[data-testid="new-chat-drawer"] span[data-testid="loading-spinner"]'
+SEARCH_OFFLINE = 'button[data-testid="retry-search"]'
     
     # Main text inputs
-MAIN_TEXT_INPUT = '#main > footer div._ak1r div[contenteditable="true"]'
+MAIN_TEXT_INPUT = '#main > footer div[data-testid="conversation-compose-box-input"]'
 
 MAIN_SEND_BUTTON = [
     '#main footer span[data-icon="wds-ic-send-filled"]',
@@ -28,7 +29,7 @@ ATTACH_PLUS_BUTTON = [
     ]
 
 IMG_VID_CATEGORY_BUTTON = '#app div[role="menu"] button[role="menuitem"]:nth-of-type(2)'
-IMG_VID_INPUT = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]'
+IMG_VID_INPUT = 'input[accept="image/*,video/mp4,video/3gpp,video/quicktime,video/webm,video/x-matroska"]'
 
 AUDIO_CATEGORY_BUTTON = '#app div[role="menu"] button[role="menuitem"]:nth-of-type(4)'
 AUDIO_INPUT = 'input[accept="audio/wav,audio/mp3,audio/ogg,audio/aac,audio/mpeg"]'
@@ -51,7 +52,7 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.2.0'
+GUI_TITLE = 'Zapline - v1.2.1'
 GUI_THEME = 'solar'
 
     # Path

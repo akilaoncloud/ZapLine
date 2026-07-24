@@ -172,37 +172,49 @@ class Browser:
 
                 # Searching...
                 try: 
-                    search = wait.until(
+                    wait.until(
                         EC.any_of(
-                            EC.visibility_of_element_located((By.CSS_SELECTOR, OFFLINE_SUBTITLE)),
-                            EC.visibility_of_element_located((By.CSS_SELECTOR, RESULTS_SUBTITLE)),
+                            EC.visibility_of_element_located((By.CSS_SELECTOR, SEARCH_LOADING)),
+                            EC.visibility_of_element_located((By.CSS_SELECTOR, SEARCH_FAIL)),
+                            EC.visibility_of_element_located((By.CSS_SELECTOR, SEARCH_OFFLINE)),
                             EC.visibility_of_element_located((By.CSS_SELECTOR, CHAT_LIST))
                         )
-                    ).text
+                    )
 
                 except StaleElementReferenceException:
                     logging.warning('\n\nStaleElement - Retrying...\n\n')
                     humanWait(speed)
 
                 else:
+                    if driver.find_elements(By.CSS_SELECTOR, CHAT_LIST):
+                        search = 'found'
+                    elif driver.find_elements(By.CSS_SELECTOR, SEARCH_LOADING):
+                        search = 'loading'
+                    elif driver.find_elements(By.CSS_SELECTOR, SEARCH_FAIL):
+                        search = 'Not Found'
+                    elif driver.find_elements(By.CSS_SELECTOR, SEARCH_OFFLINE):
+                        search = 'offline'
+                    else:
+                        search = 'loading'  # security fallback
+                        logging.warning('No elements found on chat search')
+
                     logging.info(search)
 
-                    if contact_number in search: # No results found for 'contact_number'
+                    if search == 'Not Found': # No results found for 'contact_number'
                         humanWait(speed)
                         wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, SEARCH_BAR_CLEAN_BUTTON))).click()
                         contact[3].value = '✘'
-                        search = 'Not Found'
                         break
 
-                    elif (contact_search_retries == 20) or ('internet' in search): # Slow |OR| no connection.
+                    elif (contact_search_retries == 20) or (search == 'offline'): # Slow |OR| no connection.
                         return CONNECTION_ERROR
                         
-                    elif '...' in search: # Looking for... 
+                    elif search == 'loading': # Looking for... 
                         humanWait(speed) # It's still looking if the contact exists or not
                         contact_search_retries+=1
 
                     # Found it
-                    else:
+                    elif search == 'found':
                         humanWait(speed)
                         search_bar.send_keys(Keys.ENTER)
                         humanWait(speed)
