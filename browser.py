@@ -3,8 +3,8 @@ from selenium import webdriver  # pip install selenium
 from selenium.common.exceptions import *
 from requests.exceptions import ConnectionError #pip install requests
 
-from selenium.webdriver.edge.options import Options
-from selenium.webdriver.edge.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 
 from selenium.webdriver.common.keys import Keys
@@ -14,9 +14,17 @@ from selenium.webdriver.common.by import By
 from time import sleep
 from traceback import format_exc
 import logging
+import os
 
 from settings import *
 from behavior import *
+
+# Forces Selenium Manager to always provision "Chrome for Testing" — a
+# dedicated, non-auto-updating Chrome build made for automation — instead
+# of reusing whatever Chrome (if any) the user has installed. This keeps
+# behavior identical and stable across every machine, regardless of which
+# browser (or version) is or isn't installed.
+os.environ['SE_FORCE_BROWSER_DOWNLOAD'] = 'true'
 
 class Browser:
 
@@ -40,17 +48,22 @@ class Browser:
         self.quitBrowser()
 
         try:
+            # Persistent profile folder, kept next to the ZapLine app itself — this is
+            # what lets Chrome for Testing remember the WhatsApp Web login between runs.
+            profile_dir = os.path.join(os.path.expanduser('~'), '.zapline', 'browser-profile')
+            os.makedirs(profile_dir, exist_ok=True)
+
             # Configures the Browser
             BrowserOptions = Options() # Add preferences on how to open the browser
+            BrowserOptions.browser_version = 'stable' # Tells Selenium Manager to manage Chrome for Testing, not the local Chrome
             BrowserOptions.add_argument('--start-maximized') # Opens maximized
             BrowserOptions.add_argument('--no-first-run') # Opens faster
             BrowserOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
-            BrowserOptions.add_argument('--guest') # Opens in guest mode, without looking for profiles
-            #BrowserOptions.add_argument(r'--user-data-dir=C:\Users\"USERNAME"\AppData\Local\Microsoft\Edge\User Data') # Opens with user profile
+            BrowserOptions.add_argument(f'--user-data-dir={profile_dir}') # Opens in guest mode, without looking for profiles
             BrowserService = Service()
 
-            # Constructs the Browser
-            driver = webdriver.Edge(options=BrowserOptions, service=BrowserService)
+            # Constructs the Browser (downloads Chrome for Testing on first run, then reuses the cached copy)
+            driver = webdriver.Chrome(options=BrowserOptions, service=BrowserService)
             driver.get('https://web.whatsapp.com/')
 
             ignore = (NoSuchElementException, StaleElementReferenceException) # Ignores old or non existent elements

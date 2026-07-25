@@ -10,7 +10,6 @@ from datetime import timedelta
 import threading
 from traceback import format_exc
 import logging
-import subprocess
 import sys
 
 from settings import *
@@ -33,13 +32,6 @@ class GUI:
         window.destroy()
         Browser().quitBrowser()
         sys.exit(0)
-
-    def resetEdge(self):
-        if messagebox.askyesno(RESET_EDGE_TITLE, RESET_EDGE_TEXT_QUESTION):
-            subprocess.run(["taskkill", "/F", "/IM", "msedge.exe", "/T"], shell=True)
-            subprocess.run(["taskkill", "/F", "/IM", "msedgedriver.exe", "/T"], shell=True)
-            subprocess.run(["taskkill", "/F", "/IM", "msedgewebview2.exe", "/T"], shell=True)
-            messagebox.showinfo(RESET_EDGE_TITLE, RESET_EDGE_TEXT_SUCCESS)
 
     def syncWorkbook(self, read):
         try:
@@ -136,12 +128,7 @@ class GUI:
         self.bt_sheet = tb.Button(self.settings, text=BUTTON_OPEN_SHEET, command=self.openSheet)
         self.bt_sheet.pack(side=LEFT, padx=5)
 
-        self.bt_edge = tb.Button(self.settings, text='❌', command=self.resetEdge)
-        self.bt_edge.pack(side=LEFT, padx=5)
-
         self.settings.grid(row=2, column=0, pady=10)
-
-        ToolTip(self.bt_edge, text=RESET_EDGE_TOOLTIP, bootstyle=(WARNING, INVERSE))
 
         # Canvas - Image preview
         attachment_label = tb.Label(window, text=LABEL_ATTACHMENT_BOX) # adds a text or subtitle
@@ -277,7 +264,6 @@ class GUI:
             try:
                 self.sync['state'] = DISABLED
                 self.send['state'] = DISABLED
-                self.bt_edge['state'] = DISABLED
 
                 self.status.set(STATUS_SYNCING)
                 sync_result = Browser().syncBrowser()
@@ -290,7 +276,6 @@ class GUI:
                     self.send['state'] = NORMAL
 
                 self.sync['state'] = NORMAL
-                self.bt_edge['state'] = NORMAL
             except:
                 logging.error(format_exc())
 
@@ -315,7 +300,6 @@ class GUI:
 
                 self.msg['state'] = DISABLED
                 self.bt_sheet['state'] = DISABLED
-                self.bt_edge['state'] = DISABLED
                 self.insert_img['state'] = DISABLED
                 self.insert_vid['state'] = DISABLED
                 self.insert_aud['state'] = DISABLED
@@ -398,7 +382,6 @@ class GUI:
 
                 self.msg['state'] = NORMAL
                 self.bt_sheet['state'] = NORMAL
-                self.bt_edge['state'] = NORMAL
                 self.insert_img['state'] = NORMAL
                 self.insert_vid['state'] = NORMAL
                 self.insert_aud['state'] = NORMAL
