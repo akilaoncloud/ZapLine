@@ -101,6 +101,28 @@ class GUI:
         self.speed = float('%.1f' % self.scale.get())
         self.n_speed.set(f'{SPEED}: {self.speed}s')
 
+    def BMPTypeFilter(self, event):
+        #if event.char and ord(event.char) > 0xFFFF:
+        #    return "break"
+        if any(ord(c) > 0xFFFF for c in event.char):
+            return "break"
+
+    def BMPPasteFilter(self, event):
+        try:
+            texto = self.msg.clipboard_get()
+        except Exception:
+            return "break"
+
+        texto_filtrado = ''.join(c for c in texto if ord(c) <= 0xFFFF)
+
+        try:
+            self.msg.delete('sel.first', 'sel.last')
+        except Exception:
+            pass  # Nothing selected 
+
+        self.msg.insert('insert', texto_filtrado)
+        return "break"
+
     def openApp(self):
         global window
 
@@ -120,8 +142,13 @@ class GUI:
         # Textbox - Message
         lbl_box = tb.Label(window, text = LABEL_MESSAGE_BOX) # adds a text or subtitle
         lbl_box.grid(row=0, column=0, pady=10)
+
         self.msg = Text(window, width=50)
         self.msg.grid(row=1, column=0, sticky=NSEW, padx=15)
+
+        self.msg.bind('<KeyPress>', self.BMPTypeFilter)
+        self.msg.bind('<<Paste>>', self.BMPPasteFilter)
+
         # Button - Sheet file
         self.settings = tb.Frame(window)
 

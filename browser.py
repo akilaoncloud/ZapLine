@@ -167,6 +167,7 @@ class Browser:
 
         try:        
             contact_number = str(contact[2].value)
+            contact_number = ''.join(c for c in contact_number if ord(c) <= 0xFFFF)
 
             # Verifies if last searched contact was found
             if last_search != 'Not Found':
