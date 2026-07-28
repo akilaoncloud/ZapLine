@@ -65,7 +65,7 @@ class Browser:
             BrowserOptions.add_argument('--start-maximized') # Opens maximized
             BrowserOptions.add_argument('--no-first-run') # Opens faster
             BrowserOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
-            BrowserOptions.add_argument(f'--user-data-dir={PROFILE_DIR}') # Opens in guest mode, without looking for profiles
+            BrowserOptions.add_argument(f'--user-data-dir={PROFILE_DIR}') # Persists cookies/session between runs, keeping the WhatsApp login
             BrowserService = Service()
 
             # Constructs the Browser (downloads Chrome for Testing on first run, then reuses the cached copy)

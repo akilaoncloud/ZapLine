@@ -107,8 +107,6 @@ class GUI:
         self.n_speed.set(f'{SPEED}: {self.speed}s')
 
     def BMPTypeFilter(self, event):
-        #if event.char and ord(event.char) > 0xFFFF:
-        #    return "break"
         if any(ord(c) > 0xFFFF for c in event.char):
             return "break"
 
