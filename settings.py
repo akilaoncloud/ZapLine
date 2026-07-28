@@ -52,7 +52,8 @@ WAIT_TIME = 10
 SYNC_TIME = 600
 
     # GUI Style
-GUI_TITLE = 'Zapline - v1.3.0'
+VERSION = "v1.3.0"
+GUI_TITLE = f'Zapline - {VERSION}'
 GUI_THEME = 'solar'
 
     # Path

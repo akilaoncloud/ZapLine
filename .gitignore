@@ -2,3 +2,6 @@ __pycache__/
 session.log
 .vscode/
 .venv/
+build/
+dist/
+*.zip

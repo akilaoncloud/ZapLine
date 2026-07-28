@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configura Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instala dependências
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Atualiza a versão em settings.py com base na tag
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          (Get-Content settings.py) -replace "VERSION = '.*'", "VERSION = '$version'" | Set-Content settings.py
+
+      - name: Builda o executável
+        run: pyinstaller ZapLine.spec
+
+      - name: Renomeia a pasta pronta com a versão
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          Rename-Item "dist\ZapLine" "dist\ZapLine-win64-$version"
+
+      - name: Compacta a pasta renomeada
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          Compress-Archive -Path "dist\ZapLine-win64-$version" -DestinationPath "ZapLine-win64-$version.zip"
+
+      - name: Atualiza o link de download no README
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          (Get-Content README.md) -replace "ZapLine-win64-v[\d\.]+\.zip", "ZapLine-win64-$version.zip" | Set-Content README.md
+
+      - name: Publica o release no GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ZapLine-win64-*.zip
+
+      - name: Commita o README atualizado
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "docs: atualiza link de download para ${{ github.ref_name }}"
+          git push origin HEAD:main
