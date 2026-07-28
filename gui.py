@@ -33,6 +33,11 @@ class GUI:
         Browser().quitBrowser()
         sys.exit(0)
 
+    def resetBrowser(self):
+        if messagebox.askyesno(RESET_BROWSER_TITLE, RESET_BROWSER_TEXT_QUESTION):
+            Browser().resetBrowser()
+            messagebox.showinfo(RESET_BROWSER_TITLE, RESET_BROWSER_TEXT_SUCCESS)    
+
     def syncWorkbook(self, read):
         try:
             global wb
@@ -155,7 +160,12 @@ class GUI:
         self.bt_sheet = tb.Button(self.settings, text=BUTTON_OPEN_SHEET, command=self.openSheet)
         self.bt_sheet.pack(side=LEFT, padx=5)
 
+        self.bt_reset_profile = tb.Button(self.settings, text='❌', command=self.resetBrowser)
+        self.bt_reset_profile.pack(side=LEFT, padx=5)
+
         self.settings.grid(row=2, column=0, pady=10)
+
+        ToolTip(self.bt_reset_profile, text=RESET_BROWSER_TOOLTIP, bootstyle=(WARNING, INVERSE))
 
         # Canvas - Image preview
         attachment_label = tb.Label(window, text=LABEL_ATTACHMENT_BOX) # adds a text or subtitle
@@ -291,6 +301,7 @@ class GUI:
             try:
                 self.sync['state'] = DISABLED
                 self.send['state'] = DISABLED
+                self.bt_reset_profile['state'] = DISABLED
 
                 self.status.set(STATUS_SYNCING)
                 sync_result = Browser().syncBrowser()
@@ -303,6 +314,7 @@ class GUI:
                     self.send['state'] = NORMAL
 
                 self.sync['state'] = NORMAL
+                self.bt_reset_profile['state'] = NORMAL
             except:
                 logging.error(format_exc())
 
@@ -327,6 +339,7 @@ class GUI:
 
                 self.msg['state'] = DISABLED
                 self.bt_sheet['state'] = DISABLED
+                self.bt_reset_profile['state'] = DISABLED
                 self.insert_img['state'] = DISABLED
                 self.insert_vid['state'] = DISABLED
                 self.insert_aud['state'] = DISABLED
@@ -409,6 +422,7 @@ class GUI:
 
                 self.msg['state'] = NORMAL
                 self.bt_sheet['state'] = NORMAL
+                self.bt_reset_profile['state'] = NORMAL
                 self.insert_img['state'] = NORMAL
                 self.insert_vid['state'] = NORMAL
                 self.insert_aud['state'] = NORMAL

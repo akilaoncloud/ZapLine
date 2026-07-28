@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 
 from time import sleep
 from traceback import format_exc
+from shutil import rmtree
 import logging
 import os
 
@@ -25,6 +26,7 @@ from behavior import *
 # behavior identical and stable across every machine, regardless of which
 # browser (or version) is or isn't installed.
 os.environ['SE_FORCE_BROWSER_DOWNLOAD'] = 'true'
+PROFILE_DIR = os.path.join(os.path.expanduser('~'), '.zapline', 'browser-profile')
 
 class Browser:
 
@@ -38,6 +40,11 @@ class Browser:
         except: # If it's already closed, it does nothing
             pass
 
+    def resetBrowser(self):
+        self.quitBrowser() # Closes the browser first, so its files aren't locked
+        sleep(1)
+        rmtree(PROFILE_DIR, ignore_errors=True) # Deletes the whole profile folder (cookies, session, everything)
+
     def syncBrowser(self):
         global driver
         global BrowserOptions
@@ -50,8 +57,7 @@ class Browser:
         try:
             # Persistent profile folder, kept next to the ZapLine app itself — this is
             # what lets Chrome for Testing remember the WhatsApp Web login between runs.
-            profile_dir = os.path.join(os.path.expanduser('~'), '.zapline', 'browser-profile')
-            os.makedirs(profile_dir, exist_ok=True)
+            os.makedirs(PROFILE_DIR, exist_ok=True)
 
             # Configures the Browser
             BrowserOptions = Options() # Add preferences on how to open the browser
@@ -59,7 +65,7 @@ class Browser:
             BrowserOptions.add_argument('--start-maximized') # Opens maximized
             BrowserOptions.add_argument('--no-first-run') # Opens faster
             BrowserOptions.add_experimental_option('detach', True) # Doesn't quit even after the function end
-            BrowserOptions.add_argument(f'--user-data-dir={profile_dir}') # Opens in guest mode, without looking for profiles
+            BrowserOptions.add_argument(f'--user-data-dir={PROFILE_DIR}') # Opens in guest mode, without looking for profiles
             BrowserService = Service()
 
             # Constructs the Browser (downloads Chrome for Testing on first run, then reuses the cached copy)

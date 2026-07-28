@@ -87,7 +87,9 @@ SEND_MESSAGE_MODE = 'Apenas Mensagem'
 SEND_ATTACHMENT_MODE = 'Apenas Anexo'
 SEND_MSG_ATTCH_MODE = 'Mensagem + Anexo'
 
-
+RESET_BROWSER_TITLE = 'Apagar sessão do WhatsApp'
+RESET_BROWSER_TEXT_QUESTION = 'Deseja realmente apagar a sessão salva? Você vai precisar escanear o QR Code de novo na próxima sincronização.'
+RESET_BROWSER_TEXT_SUCCESS = 'Sessão apagada com sucesso!'
 
     # Status
 STATUS_DEFAULT = 'Sincronize seu telefone ⇄'
@@ -123,5 +125,6 @@ BUTTON_STOP = 'Parar'
 
     #ToolTips
 
+RESET_BROWSER_TOOLTIP = 'Clique aqui se quiser limpar sua sessão do WhatsApp Web. Isso apaga os cookies e o login salvos.\n\n Caso não tenha certeza, evite usá-lo.'
 SCALE_TOOLTIP = 'Conexões ou computadores lentos podem ocasionar erros no envio. Aumente o tempo de espera entre as etapas para compensar a lentidão.\n\n Caso não tenha certeza, deixe em: "1.0s".'
 N_LIN_TOOLTIP = 'Digite, da aba, o número da linha que deseja iniciar o envio. Quando em branco, a primeira linha é a padrão.\n\n Caso não tenha certeza, deixe em branco.'
