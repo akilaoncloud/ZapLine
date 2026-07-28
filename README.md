@@ -5,7 +5,7 @@ O ZapLine usa uma instância própria e isolada de navegador (Chrome for Testing
 
 # Guia de Instalação
 
-[![GitHub Release](https://img.shields.io/github/v/release/akilaoncloud/zapline?label=Baixe%20a%20versão%20mais%20recente)](https://github.com/akilaoncloud/ZapLine/releases/latest/download/ZapLine-win64-v1.3.0.zip)
+[![GitHub Release](https://img.shields.io/github/v/release/akilaoncloud/zapline?label=Baixe%20a%20versão%20mais%20recente)](https://github.com/akilaoncloud/ZapLine/releases/latest/download/ZapLine-win64-v1.3.1.zip)
 1. Baixe o arquivo compactado, extraia e execute o arquivo `ZapLine`.
 2. Não exclua a pasta `_internal`, ela é necessária para o funcionamento do programa.
 3. **(Recomendado)** Mantenha a pasta do programa em um dos diretórios: `Downloads`, `Documentos` ou `Área de Trabalho`.
