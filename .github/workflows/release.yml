@@ -53,6 +53,7 @@ jobs:
       - name: Publica o release no GitHub
         uses: softprops/action-gh-release@v2
         with:
+          name: ZapLine ${{ github.ref_name }}
           files: ZapLine-win64-*.zip
 
       - name: Commita o README atualizado
