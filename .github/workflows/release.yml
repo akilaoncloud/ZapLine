@@ -36,7 +36,7 @@ jobs:
         shell: pwsh
         run: |
           $version = "${{ github.ref_name }}"
-          Rename-Item "dist\ZapLine" "dist\ZapLine-win64-$version"
+          Rename-Item -Path "dist\ZapLine" -NewName "ZapLine-win64-$version"
 
       - name: Compacta a pasta renomeada
         shell: pwsh
